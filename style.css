@@ -18,6 +18,14 @@ body {
     margin-top: 10px;
     font-style: italic;
   }
+
+
+  .logo {
+    max-width: 150px;
+    margin-bottom: 15px;
+  }
+
+  
   
   .services, .contact {
     padding: 30px 20px;
