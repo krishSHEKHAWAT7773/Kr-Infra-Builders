@@ -4,12 +4,22 @@
     padding: 0;
     box-sizing: border-box;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     font-family: 'Segoe UI', sans-serif;
     background: #f9f9f9;
     color: #333;
     line-height: 1.6;
     padding: 0 20px;
+    user-select: none; /* Prevent text selection */
+  }
+  
+  /* Lock Images */
+  img {
+    pointer-events: none;
+    user-select: none;
   }
   
   /* Header Hero Section */
@@ -125,8 +135,4 @@
     section {
       padding: 0 10px;
     }
-  }
-
-  html {
-    scroll-behavior: smooth;
   }
