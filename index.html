@@ -80,10 +80,18 @@
 
   <section class="contact" id="contact">
     <h2>Contact Us</h2>
-    <p>Email: krinfrabuilders@gmail.com</p>
-    <p>Phone: +91-8219151544</p>
-    <p>Website: <a href="https://krinfrabuilders.in">www.krinfrabuilders.in</a></p>
-    <p>Location: Kathua, Jammu & Kathua, India</p>
+    <form action="https://formspree.io/f/yourFormID" method="POST" class="contact-form">
+      <label for="name">Name</label>
+      <input type="text" name="name" id="name" required>
+  
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" required>
+  
+      <label for="message">Message</label>
+      <textarea name="message" id="message" rows="5" required></textarea>
+  
+      <button type="submit">Send Message</button>
+    </form>
   </section>
 
   <footer>
