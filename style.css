@@ -25,11 +25,12 @@ img {
 /* Header Hero Section */
 .hero {
   text-align: center;
-  background: linear-gradient(to right, #1a237e, #283593);
+  background: linear-gradient(to right, #4B0082, #6A0DAD, #800080);
   color: #fff;
   padding: 60px 20px;
   border-radius: 0 0 20px 20px;
 }
+
 .logo {
   max-width: 120px;
   margin-bottom: 20px;
