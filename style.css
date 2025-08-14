@@ -351,3 +351,20 @@ nav ul {
   transition: background-color 0.3s ease;
 }
 
+.message {
+  margin-top: 8px;
+  font-size: 0.9em;
+}
+
+.message.success {
+  color: #2e7d32;
+}
+
+.message.error {
+  color: #c62828;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

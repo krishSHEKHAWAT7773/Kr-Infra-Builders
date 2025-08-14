@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebas
 import { getAuth, onAuthStateChanged, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 🔧 Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyC2jY47xWVne8Dy4X83Z6szWY3_t6fZfRM",
     authDomain: "kr-infra-auth.firebaseapp.com",
@@ -16,14 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // 🔐 Auth Check
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location.href = "login.html";
       return;
     }
 
-    // 🧭 Tab Content Definitions
     const tabs = {
       homeTab: `<h2>Home</h2><p>Welcome to KR Infra Builders’ dashboard.</p>`,
       projectsTab: `<h2>Projects</h2><p>Track ongoing and completed projects here.</p>`,
@@ -31,20 +28,22 @@ document.addEventListener("DOMContentLoaded", () => {
         <h2>Profile</h2>
         <div class="profile-card">
           <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+
           <label for="displayName">Display Name</label>
           <input type="text" id="displayName" placeholder="Enter your name" />
           <button id="updateProfileBtn">Update Profile</button>
+          <div id="profileMsg" class="message"></div>
 
           <hr />
 
           <label for="newPassword">New Password</label>
           <input type="password" id="newPassword" placeholder="Enter new password" />
           <button id="updatePasswordBtn">Update Password</button>
+          <div id="passwordMsg" class="message"></div>
         </div>
       `
     };
 
-    // 🧩 Tab Switching Logic
     Object.keys(tabs).forEach(id => {
       const tab = document.getElementById(id);
       if (tab) {
@@ -62,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // 🚪 Logout
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
@@ -73,36 +71,73 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🛠 Profile Tab Logic
   function renderProfileTab(user) {
     document.getElementById("userEmail").textContent = user.email;
 
     const updateBtn = document.getElementById("updateProfileBtn");
     const nameInput = document.getElementById("displayName");
-    if (updateBtn && nameInput) {
-      updateBtn.addEventListener("click", () => {
-        const name = nameInput.value.trim();
-        if (name) {
-          updateProfile(user, { displayName: name })
-            .then(() => alert("Profile updated!"))
-            .catch(err => alert("Error: " + err.message));
-        }
-      });
-    }
+    const profileMsg = document.getElementById("profileMsg");
+
+    updateBtn.addEventListener("click", () => {
+      const name = nameInput.value.trim();
+      profileMsg.textContent = "";
+      updateBtn.disabled = true;
+      updateBtn.textContent = "Updating...";
+
+      if (!name) {
+        profileMsg.textContent = "Display name cannot be empty.";
+        profileMsg.className = "message error";
+        updateBtn.disabled = false;
+        updateBtn.textContent = "Update Profile";
+        return;
+      }
+
+      updateProfile(user, { displayName: name })
+        .then(() => {
+          profileMsg.textContent = "Profile updated successfully.";
+          profileMsg.className = "message success";
+        })
+        .catch(err => {
+          profileMsg.textContent = "Error: " + err.message;
+          profileMsg.className = "message error";
+        })
+        .finally(() => {
+          updateBtn.disabled = false;
+          updateBtn.textContent = "Update Profile";
+        });
+    });
 
     const passBtn = document.getElementById("updatePasswordBtn");
     const passInput = document.getElementById("newPassword");
-    if (passBtn && passInput) {
-      passBtn.addEventListener("click", () => {
-        const newPass = passInput.value.trim();
-        if (newPass.length >= 6) {
-          updatePassword(user, newPass)
-            .then(() => alert("Password updated!"))
-            .catch(err => alert("Error: " + err.message));
-        } else {
-          alert("Password must be at least 6 characters.");
-        }
-      });
-    }
+    const passwordMsg = document.getElementById("passwordMsg");
+
+    passBtn.addEventListener("click", () => {
+      const newPass = passInput.value.trim();
+      passwordMsg.textContent = "";
+      passBtn.disabled = true;
+      passBtn.textContent = "Updating...";
+
+      if (newPass.length < 6) {
+        passwordMsg.textContent = "Password must be at least 6 characters.";
+        passwordMsg.className = "message error";
+        passBtn.disabled = false;
+        passBtn.textContent = "Update Password";
+        return;
+      }
+
+      updatePassword(user, newPass)
+        .then(() => {
+          passwordMsg.textContent = "Password updated successfully.";
+          passwordMsg.className = "message success";
+        })
+        .catch(err => {
+          passwordMsg.textContent = "Error: " + err.message;
+          passwordMsg.className = "message error";
+        })
+        .finally(() => {
+          passBtn.disabled = false;
+          passBtn.textContent = "Update Password";
+        });
+    });
   }
 });
