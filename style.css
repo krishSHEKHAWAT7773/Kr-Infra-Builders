@@ -202,3 +202,14 @@ footer {
 .switch-link a:hover {
   text-decoration: underline;
 }
+
+.nav-auth {
+  font-weight: bold;
+  color: #007bff;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.nav-auth:hover {
+  text-decoration: underline;
+}
