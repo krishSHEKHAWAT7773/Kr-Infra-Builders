@@ -87,6 +87,35 @@ Object.keys(tabs).forEach(id => {
       document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
       tab.classList.add("active");
       document.getElementById("dashboardContent").innerHTML = tabs[id];
+
+      // 🔧 Inject profile logic only when profile tab is clicked
+      if (id === "profileTab") {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            document.getElementById("userEmail").textContent = user.email;
+
+            const updateBtn = document.getElementById("updateProfileBtn");
+            const nameInput = document.getElementById("displayName");
+            if (updateBtn && nameInput) {
+              updateBtn.addEventListener("click", () => {
+                updateProfile(user, { displayName: nameInput.value.trim() })
+                  .then(() => alert("Profile updated!"))
+                  .catch(err => alert("Error: " + err.message));
+              });
+            }
+
+            const passBtn = document.getElementById("updatePasswordBtn");
+            const passInput = document.getElementById("newPassword");
+            if (passBtn && passInput) {
+              passBtn.addEventListener("click", () => {
+                updatePassword(user, passInput.value.trim())
+                  .then(() => alert("Password updated!"))
+                  .catch(err => alert("Error: " + err.message));
+              });
+            }
+          }
+        });
+      }
     });
   }
 });
