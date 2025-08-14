@@ -1,8 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // 🔧 Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyC2jY47xWVne8Dy4X83Z6szWY3_t6fZfRM",
     authDomain: "kr-infra-auth.firebaseapp.com",
@@ -16,115 +16,93 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+  // 🔐 Auth Check
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
 
-  // Show user email in profile tab
-  const emailSpan = document.getElementById("userEmail");
-  if (emailSpan) emailSpan.textContent = user.email;
+    // 🧭 Tab Content Definitions
+    const tabs = {
+      homeTab: `<h2>Home</h2><p>Welcome to KR Infra Builders’ dashboard.</p>`,
+      projectsTab: `<h2>Projects</h2><p>Track ongoing and completed projects here.</p>`,
+      profileTab: `
+        <h2>Profile</h2>
+        <div class="profile-card">
+          <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+          <label for="displayName">Display Name</label>
+          <input type="text" id="displayName" placeholder="Enter your name" />
+          <button id="updateProfileBtn">Update Profile</button>
 
-  // Handle profile update
-  const updateBtn = document.getElementById("updateProfileBtn");
-  const nameInput = document.getElementById("displayName");
-  if (updateBtn && nameInput) {
-    updateBtn.addEventListener("click", () => {
-      updateProfile(user, { displayName: nameInput.value.trim() })
-        .then(() => alert("Profile updated!"))
-        .catch(err => alert("Error: " + err.message));
-    });
-  }
+          <hr />
 
-  // Handle password update
-  const passBtn = document.getElementById("updatePasswordBtn");
-  const passInput = document.getElementById("newPassword");
-  if (passBtn && passInput) {
-    passBtn.addEventListener("click", () => {
-      updatePassword(user, passInput.value.trim())
-        .then(() => alert("Password updated!"))
-        .catch(err => alert("Error: " + err.message));
-    });
-  }
-});
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" placeholder="Enter new password" />
+          <button id="updatePasswordBtn">Update Password</button>
+        </div>
+      `
+    };
 
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.href = "login.html";
-      });
-    });
-  }
+    // 🧩 Tab Switching Logic
+    Object.keys(tabs).forEach(id => {
+      const tab = document.getElementById(id);
+      if (tab) {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+          tab.classList.add("active");
 
-  const tabs = {
-    homeTab: `<h2>Home</h2><p>Welcome to KR Infra Builders’ dashboard.</p>`,
-    projectsTab: `<h2>Projects</h2><p>Track ongoing and completed projects here.</p>`,
-    profileTab: `
-  <h2>Profile</h2>
-  <div class="profile-card">
-    <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
-    <label for="displayName">Display Name</label>
-    <input type="text" id="displayName" placeholder="Enter your name" />
-    <button id="updateProfileBtn">Update Profile</button>
+          const content = document.getElementById("dashboardContent");
+          content.innerHTML = tabs[id];
 
-    <hr />
-
-    <label for="newPassword">New Password</label>
-    <input type="password" id="newPassword" placeholder="Enter new password" />
-    <button id="updatePasswordBtn">Update Password</button>
-  </div>
-`
-
-
-  };
-
-Object.keys(tabs).forEach(id => {
-  const tab = document.getElementById(id);
-  if (tab) {
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
-      tab.classList.add("active");
-      document.getElementById("dashboardContent").innerHTML = tabs[id];
-
-      // 🔧 Inject profile logic only when profile tab is clicked
-      if (id === "profileTab") {
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            document.getElementById("userEmail").textContent = user.email;
-
-            const updateBtn = document.getElementById("updateProfileBtn");
-            const nameInput = document.getElementById("displayName");
-            if (updateBtn && nameInput) {
-              updateBtn.addEventListener("click", () => {
-                updateProfile(user, { displayName: nameInput.value.trim() })
-                  .then(() => alert("Profile updated!"))
-                  .catch(err => alert("Error: " + err.message));
-              });
-            }
-
-            const passBtn = document.getElementById("updatePasswordBtn");
-            const passInput = document.getElementById("newPassword");
-            if (passBtn && passInput) {
-              passBtn.addEventListener("click", () => {
-                updatePassword(user, passInput.value.trim())
-                  .then(() => alert("Password updated!"))
-                  .catch(err => alert("Error: " + err.message));
-              });
-            }
+          if (id === "profileTab") {
+            renderProfileTab(user);
           }
         });
       }
     });
-  }
-});
 
-
-
-document.querySelectorAll(".nav-item").forEach(item => {
-  item.addEventListener("click", () => {
-    document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
-    item.classList.add("active");
+    // 🚪 Logout
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        signOut(auth).then(() => {
+          window.location.href = "login.html";
+        });
+      });
+    }
   });
+
+  // 🛠 Profile Tab Logic
+  function renderProfileTab(user) {
+    document.getElementById("userEmail").textContent = user.email;
+
+    const updateBtn = document.getElementById("updateProfileBtn");
+    const nameInput = document.getElementById("displayName");
+    if (updateBtn && nameInput) {
+      updateBtn.addEventListener("click", () => {
+        const name = nameInput.value.trim();
+        if (name) {
+          updateProfile(user, { displayName: name })
+            .then(() => alert("Profile updated!"))
+            .catch(err => alert("Error: " + err.message));
+        }
+      });
+    }
+
+    const passBtn = document.getElementById("updatePasswordBtn");
+    const passInput = document.getElementById("newPassword");
+    if (passBtn && passInput) {
+      passBtn.addEventListener("click", () => {
+        const newPass = passInput.value.trim();
+        if (newPass.length >= 6) {
+          updatePassword(user, newPass)
+            .then(() => alert("Password updated!"))
+            .catch(err => alert("Error: " + err.message));
+        } else {
+          alert("Password must be at least 6 characters.");
+        }
+      });
+    }
+  }
 });
