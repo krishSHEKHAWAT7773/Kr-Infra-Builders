@@ -34,12 +34,13 @@ document.addEventListener("DOMContentLoaded", () => {
     profileTab: `<h2>Profile</h2><p>Manage your account details.</p>`
   };
 
-  Object.keys(tabs).forEach(id => {
-    const tab = document.getElementById(id);
-    if (tab) {
-      tab.addEventListener("click", () => {
-        document.getElementById("dashboardContent").innerHTML = tabs[id];
-      });
-    }
-  });
+Object.keys(tabs).forEach(id => {
+  const tab = document.getElementById(id);
+  if (tab) {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById("dashboardContent").innerHTML = tabs[id];
+    });
+  }
 });
