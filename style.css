@@ -22,6 +22,50 @@ img {
   user-select: none;
 }
 
+/* ===================== */
+/* 🔷 Navigation Bar */
+/* ===================== */
+.navbar {
+  background-color: #1f1f1f;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border-radius: 0 0 10px 10px;
+  margin-bottom: 20px;
+}
+.nav-links {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+.nav-links li a {
+  color: #f0f0f0;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nav-links li a:hover {
+  color: #ffca28;
+}
+.nav-auth {
+  background-color: #ffca28;
+  color: #1f1f1f !important;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+.nav-auth:hover {
+  background-color: #ffc107;
+  text-decoration: none;
+}
+
 /* Header Hero Section */
 .hero {
   text-align: center;
@@ -30,7 +74,6 @@ img {
   padding: 60px 20px;
   border-radius: 0 0 20px 20px;
 }
-
 .logo {
   max-width: 120px;
   margin-bottom: 20px;
@@ -144,9 +187,14 @@ footer {
   section {
     padding: 0 10px;
   }
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
 }
 
-
+/* Auth Pages */
 .auth-page {
   background-color: #0b0b0b;
   color: #f0f0f0;
@@ -200,16 +248,5 @@ footer {
   text-decoration: none;
 }
 .switch-link a:hover {
-  text-decoration: underline;
-}
-
-.nav-auth {
-  font-weight: bold;
-  color: #007bff;
-  text-decoration: none;
-  margin-left: 20px;
-}
-
-.nav-auth:hover {
   text-decoration: underline;
 }
