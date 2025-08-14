@@ -273,14 +273,12 @@ footer {
 /* 🧩 Dashboard Theme */
 /* ===================== */
 .dashboard-theme {
-  background-color: #0b0b0b;
-  color: #f0f0f0;
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 240px 1fr;
   grid-template-rows: auto 1fr;
   grid-template-areas:
     "header header"
-    "aside main";
+    "sidebar main";
   height: 100vh;
 }
 .dashboard-theme header {
@@ -291,14 +289,15 @@ footer {
   justify-content: space-between;
   align-items: center;
 }
-.dashboard-theme aside {
-  grid-area: aside;
+.dashboard-theme aside.sidebar {
+  grid-area: sidebar;
   background: #2c2c2c;
   padding: 1rem;
 }
 .dashboard-theme main {
   grid-area: main;
   padding: 2rem;
+  overflow-y: auto;
 }
 
 /* Sidebar */
@@ -341,9 +340,14 @@ nav ul {
   margin-right: 10px;
 }
 .nav-item:hover {
-  background-color: #333;
+  background-color: #0056b3;
+  color: #fff;
 }
-.active {
+.nav-item.active {
   background-color: #007bff;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
   transition: background-color 0.3s ease;
 }
+
