@@ -17,10 +17,17 @@
       <input type="password" id="password" name="password" required>
 
       <button type="submit">Login</button>
-      <p class="switch-link">Don't have an account? <a href="signup.html">Sign Up</a></p>
+      <p class="switch-link">
+        Don't have an account? <a href="signup.html">Sign Up</a><br>
+         <a href="#" id="forgot-password">Forgot Password?</a>
+     </p>
+
+
+      
     </form>
-    <script type="module" src="login.js"></script>
   </div>
+
+
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -59,5 +66,7 @@
         });
     });
   </script>
+    <script type="module" src="login.js"></script>
+
 </body>
 </html>
