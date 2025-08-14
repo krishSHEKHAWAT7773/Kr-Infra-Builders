@@ -8,10 +8,7 @@
 <body class="auth-page">
   <div class="auth-container">
     <h2>Sign Up</h2>
-    <form action="#" method="POST" class="auth-form">
-      <label for="name">Full Name</label>
-      <input type="text" id="name" name="name" required>
-
+    <form id="signup-form" class="auth-form">
       <label for="email">Email</label>
       <input type="email" id="email" name="email" required>
 
@@ -22,5 +19,43 @@
       <p class="switch-link">Already have an account? <a href="login.html">Login</a></p>
     </form>
   </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2jY47xWVne8Dy4X83Z6szWY3_t6fZfRM",
+      authDomain: "kr-infra-auth.firebaseapp.com",
+      projectId: "kr-infra-auth",
+      storageBucket: "kr-infra-auth.firebasestorage.app",
+      messagingSenderId: "263430872882",
+      appId: "1:263430872882:web:8b49bec1caaf854474412b",
+      measurementId: "G-3VVNLN7QJL"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+
+    const signupForm = document.getElementById("signup-form");
+    signupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = signupForm["email"].value;
+      const password = signupForm["password"].value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          console.log("Signup successful:", userCredential.user);
+          alert("Signup successful!");
+          // window.location.href = "login.html"; // Optional redirect
+        })
+        .catch((error) => {
+          console.error("Signup error:", error.message);
+          alert("Signup failed: " + error.message);
+        });
+    });
+  </script>
 </body>
 </html>
