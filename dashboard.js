@@ -1,12 +1,21 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {
+  getAuth, onAuthStateChanged, signOut,
+  updateProfile, updatePassword
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, updateDoc
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {
+  getStorage, ref, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const firebaseConfig = {
     apiKey: "AIzaSyC2jY47xWVne8Dy4X83Z6szWY3_t6fZfRM",
     authDomain: "kr-infra-auth.firebaseapp.com",
     projectId: "kr-infra-auth",
-    storageBucket: "kr-infra-auth.firebasestorage.app",
+    storageBucket: "kr-infra-auth.appspot.com",
     messagingSenderId: "263430872882",
     appId: "1:263430872882:web:8b49bec1caaf854474412b",
     measurementId: "G-3VVNLN7QJL"
@@ -14,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
   onAuthStateChanged(auth, (user) => {
     if (!user) {
@@ -25,23 +36,37 @@ document.addEventListener("DOMContentLoaded", () => {
       homeTab: `<h2>Home</h2><p>Welcome to KR Infra Builders’ dashboard.</p>`,
       projectsTab: `<h2>Projects</h2><p>Track ongoing and completed projects here.</p>`,
       profileTab: `
-        <h2>Profile</h2>
-        <div class="profile-card">
-          <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+  <h2>Profile</h2>
+  <div class="profile-card">
+    <img id="profileImage" src="default.jpg" alt="Profile Image" class="profile-pic" />
+    <input type="file" id="imageUpload" />
+    <button id="uploadImageBtn">Upload Image</button>
 
-          <label for="displayName">Display Name</label>
-          <input type="text" id="displayName" placeholder="Enter your name" />
-          <button id="updateProfileBtn">Update Profile</button>
-          <div id="profileMsg" class="message"></div>
+    <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
 
-          <hr />
+    <label for="displayName">Display Name</label>
+    <input type="text" id="displayName" placeholder="Enter your name" />
 
-          <label for="newPassword">New Password</label>
-          <input type="password" id="newPassword" placeholder="Enter new password" />
-          <button id="updatePasswordBtn">Update Password</button>
-          <div id="passwordMsg" class="message"></div>
-        </div>
-      `
+    <label for="userRole">Role</label>
+    <input type="text" id="userRole" placeholder="Enter your role" />
+
+    <label for="userPhone">Phone</label>
+    <input type="text" id="userPhone" placeholder="Enter your phone number" />
+
+    <label for="userAddress">Address</label>
+    <input type="text" id="userAddress" placeholder="Enter your address" />
+
+    <button id="updateProfileBtn">Update Profile</button>
+    <div id="profileMsg" class="message"></div>
+
+    <hr />
+
+    <label for="newPassword">New Password</label>
+    <input type="password" id="newPassword" placeholder="Enter new password" />
+    <button id="updatePasswordBtn">Update Password</button>
+    <div id="passwordMsg" class="message"></div>
+  </div>
+`
     };
 
     Object.keys(tabs).forEach(id => {
@@ -71,15 +96,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function renderProfileTab(user) {
-    document.getElementById("userEmail").textContent = user.email;
+  async function renderProfileTab(user) {
+    const uid = user.uid;
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
 
-    const updateBtn = document.getElementById("updateProfileBtn");
+    const emailSpan = document.getElementById("userEmail");
     const nameInput = document.getElementById("displayName");
+    const roleInput = document.getElementById("userRole");
+    const profileImg = document.getElementById("profileImage");
+    const phoneInput = document.getElementById("userPhone");
+    const addressInput = document.getElementById("userAddress");
+
+    if (userSnap.exists()) {
+      const data = userSnap.data();
+      emailSpan.textContent = data.email || user.email;
+      nameInput.value = data.name || "";
+      roleInput.value = data.role || "";
+      phoneInput.value = data.phone || "";
+      addressInput.value = data.address || "";
+      profileImg.src = data.profileImage || "default.jpg";
+    }
+
+    // 🔄 Update profile
+    const updateBtn = document.getElementById("updateProfileBtn");
     const profileMsg = document.getElementById("profileMsg");
 
-    updateBtn.addEventListener("click", () => {
+    updateBtn.addEventListener("click", async () => {
       const name = nameInput.value.trim();
+      const role = roleInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const address = addressInput.value.trim();
+
       profileMsg.textContent = "";
       updateBtn.disabled = true;
       updateBtn.textContent = "Updating...";
@@ -92,21 +140,21 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      updateProfile(user, { displayName: name })
-        .then(() => {
-          profileMsg.textContent = "Profile updated successfully.";
-          profileMsg.className = "message success";
-        })
-        .catch(err => {
-          profileMsg.textContent = "Error: " + err.message;
-          profileMsg.className = "message error";
-        })
-        .finally(() => {
-          updateBtn.disabled = false;
-          updateBtn.textContent = "Update Profile";
-        });
+      try {
+        await updateProfile(user, { displayName: name });
+        await updateDoc(userRef, { name, role, phone, address });
+        profileMsg.textContent = "Profile updated successfully.";
+        profileMsg.className = "message success";
+      } catch (err) {
+        profileMsg.textContent = "Error: " + err.message;
+        profileMsg.className = "message error";
+      } finally {
+        updateBtn.disabled = false;
+        updateBtn.textContent = "Update Profile";
+      }
     });
 
+    // 🔐 Update password
     const passBtn = document.getElementById("updatePasswordBtn");
     const passInput = document.getElementById("newPassword");
     const passwordMsg = document.getElementById("passwordMsg");
@@ -138,6 +186,32 @@ document.addEventListener("DOMContentLoaded", () => {
           passBtn.disabled = false;
           passBtn.textContent = "Update Password";
         });
+    });
+
+    // 📸 Upload profile image
+    const uploadBtn = document.getElementById("uploadImageBtn");
+    const imageInput = document.getElementById("imageUpload");
+
+    uploadBtn.addEventListener("click", async () => {
+      const file = imageInput.files[0];
+      if (!file) return;
+
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = "Uploading...";
+
+      try {
+        const storageRef = ref(storage, `profileImages/${uid}`);
+        await uploadBytes(storageRef, file);
+        const imageUrl = await getDownloadURL(storageRef);
+        await updateDoc(userRef, { profileImage: imageUrl });
+        profileImg.src = imageUrl;
+        alert("Profile image updated!");
+      } catch (err) {
+        alert("Error uploading image: " + err.message);
+      } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = "Upload Image";
+      }
     });
   }
 });
