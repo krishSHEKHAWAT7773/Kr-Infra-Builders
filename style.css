@@ -368,3 +368,91 @@ button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+
+/* ===================== */
+/* 👤 Profile Card Styling */
+/* ===================== */
+.profile-card {
+  background: #1c1c1c;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  max-width: 500px;
+  margin: 20px auto;
+  transition: box-shadow 0.3s ease;
+}
+.profile-card:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+/* Profile Inputs */
+.profile-card input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  background: #2c2c2c;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #f0f0f0;
+  font-size: 1rem;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+.profile-card input:focus {
+  border-color: #ffca28;
+  box-shadow: 0 0 5px #ffca28;
+  outline: none;
+}
+
+/* Profile Button */
+.profile-card button {
+  padding: 12px 20px;
+  background: linear-gradient(to right, #ffca28, #ffc107);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+.profile-card button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(to right, #ffc107, #ffca28);
+}
+
+/* Section Title */
+.section-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #ffca28;
+  text-align: center;
+}
+
+/* ===================== */
+/* ✅ Message Feedback */
+/* ===================== */
+.message {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  padding-left: 24px;
+  position: relative;
+}
+.message.success::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: #2e7d32;
+}
+.message.error::before {
+  content: "⚠";
+  position: absolute;
+  left: 0;
+  color: #c62828;
+}
+.message.success {
+  color: #2e7d32;
+}
+.message.error {
+  color: #c62828;
+}
