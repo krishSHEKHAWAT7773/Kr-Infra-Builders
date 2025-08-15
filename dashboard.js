@@ -65,6 +65,16 @@ document.addEventListener("DOMContentLoaded", () => {
     <input type="password" id="newPassword" placeholder="Enter new password" />
     <button id="updatePasswordBtn">Update Password</button>
     <div id="passwordMsg" class="message"></div>
+
+    <hr />
+    <h3>Live Profile Preview</h3>
+    <div class="preview-card">
+      <img id="previewImage" src="default.jpg" class="preview-pic" />
+      <p><strong>Name:</strong> <span id="previewName">—</span></p>
+      <p><strong>Role:</strong> <span id="previewRole">—</span></p>
+      <p><strong>Phone:</strong> <span id="previewPhone">—</span></p>
+      <p><strong>Address:</strong> <span id="previewAddress">—</span></p>
+    </div>
   </div>
 `
     };
@@ -108,6 +118,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const phoneInput = document.getElementById("userPhone");
     const addressInput = document.getElementById("userAddress");
 
+    const previewName = document.getElementById("previewName");
+    const previewRole = document.getElementById("previewRole");
+    const previewPhone = document.getElementById("previewPhone");
+    const previewAddress = document.getElementById("previewAddress");
+    const previewImage = document.getElementById("previewImage");
+
     if (userSnap.exists()) {
       const data = userSnap.data();
       emailSpan.textContent = data.email || user.email;
@@ -116,9 +132,19 @@ document.addEventListener("DOMContentLoaded", () => {
       phoneInput.value = data.phone || "";
       addressInput.value = data.address || "";
       profileImg.src = data.profileImage || "default.jpg";
+
+      previewName.textContent = data.name || "—";
+      previewRole.textContent = data.role || "—";
+      previewPhone.textContent = data.phone || "—";
+      previewAddress.textContent = data.address || "—";
+      previewImage.src = data.profileImage || "default.jpg";
     }
 
-    // 🔄 Update profile
+    nameInput.addEventListener("input", () => previewName.textContent = nameInput.value);
+    roleInput.addEventListener("input", () => previewRole.textContent = roleInput.value);
+    phoneInput.addEventListener("input", () => previewPhone.textContent = phoneInput.value);
+    addressInput.addEventListener("input", () => previewAddress.textContent = addressInput.value);
+
     const updateBtn = document.getElementById("updateProfileBtn");
     const profileMsg = document.getElementById("profileMsg");
 
@@ -154,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // 🔐 Update password
     const passBtn = document.getElementById("updatePasswordBtn");
     const passInput = document.getElementById("newPassword");
     const passwordMsg = document.getElementById("passwordMsg");
@@ -188,8 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 📸 Upload profile image
-    const uploadBtn = document.getElementById("uploadImageBtn");
+        const uploadBtn = document.getElementById("uploadImageBtn");
     const imageInput = document.getElementById("imageUpload");
 
     uploadBtn.addEventListener("click", async () => {
@@ -205,6 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const imageUrl = await getDownloadURL(storageRef);
         await updateDoc(userRef, { profileImage: imageUrl });
         profileImg.src = imageUrl;
+        previewImage.src = imageUrl;
         alert("Profile image updated!");
       } catch (err) {
         alert("Error uploading image: " + err.message);
