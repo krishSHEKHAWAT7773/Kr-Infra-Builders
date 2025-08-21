@@ -331,6 +331,7 @@ footer {
 /* ===================== */
 #dashboardContent {
   padding: 20px;
+  padding-top: 80px; /* prevent overlap under sticky header */
   background-color: #f9f9f9;
   color: #111;
   border-radius: 36px; /* matches Anima rectangle-7 */
@@ -480,11 +481,21 @@ button:disabled {
   }
 }
 
-
+/* ===================== */
+/* 📌 Sticky Header + Badges */
+/* ===================== */
 .dash-header {
-  position: fixed; top: 0; left: 240px; right: 0; height: 60px;
-  background: #1f1f1f; display: flex; align-items: center;
-  justify-content: space-between; padding: 0 1.5rem; z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 200px; /* align with Anima sidebar width (200px) */
+  right: 0;
+  height: 60px;
+  background: #1f1f1f;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  z-index: 100;
 }
 .header-actions { display: flex; align-items: center; gap: 1rem; }
 .notif-btn { position: relative; cursor: pointer; }
@@ -495,23 +506,34 @@ button:disabled {
 }
 .avatar { width: 32px; height: 32px; border-radius: 50%; margin-right: .5rem; }
 
+/* Sidebar collapsed state affects header offset */
+.sidebar.collapsed ~ .dash-header { left: 60px; }
 
+/* ===================== */
+/* 🎛️ Collapsible Sidebar */
+/* ===================== */
 .sidebar.collapsed { width: 60px; }
 .sidebar.collapsed .nav-item span { display: none; }
 .sidebar.collapsed .brand h3 { display: none; }
 
-
+/* ===================== */
+/* ⏳ Skeleton Loaders */
+/* ===================== */
 .skeleton { animation: pulse 1.5s infinite; }
 .skeleton-line { background: #333; border-radius: 4px; margin-bottom: 8px; }
 .skeleton-line.title { width: 60%; height: 16px; }
 .skeleton-line.value { width: 40%; height: 24px; }
 @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .4 } }
 
-
+/* ===================== */
+/* ➕ Utility Buttons */
+/* ===================== */
 #addProjectBtn { background:#ffca28; padding:8px 12px; border:none; border-radius:6px; }
 #addProjectBtn:hover { background:#ffc107; }
 
-
+/* ===================== */
+/* 🌗 Light Mode */
+/* ===================== */
 body.light-mode { background:#f5f5f5; color:#111; }
 body.light-mode .sidebar { background:#fff; color:#000; }
 /* invert other panels accordingly */
