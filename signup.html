@@ -23,39 +23,73 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword, 
+      updateProfile 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      setDoc 
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC2jY47xWVne8Dy4X83Z6szWY3_t6fZfRM",
       authDomain: "kr-infra-auth.firebaseapp.com",
       projectId: "kr-infra-auth",
-      storageBucket: "kr-infra-auth.firebasestorage.app",
+      storageBucket: "kr-infra-auth.appspot.com",
       messagingSenderId: "263430872882",
       appId: "1:263430872882:web:8b49bec1caaf854474412b",
       measurementId: "G-3VVNLN7QJL"
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    const signupForm = document.getElementById("signup-form");
-    signupForm.addEventListener("submit", (e) => {
+    document.getElementById("signup-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const email = signupForm["email"].value;
-      const password = signupForm["password"].value;
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          console.log("Signup successful:", userCredential.user);
-          alert("Signup successful!");
-          // window.location.href = "login.html"; // Optional redirect
-        })
-        .catch((error) => {
-          console.error("Signup error:", error.message);
-          alert("Signup failed: " + error.message);
+      const email = e.target.email.value.trim();
+      const password = e.target.password.value;
+      const submitBtn = e.target.querySelector("button");
+
+      // Basic password strength check
+      if (password.length < 6) {
+        alert("Password must be at least 6 characters long.");
+        return;
+      }
+
+      // Disable button to prevent multiple submissions
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "Signing up...";
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Set default (empty) display name
+        await updateProfile(user, { displayName: "" });
+
+        // Create Firestore profile document
+        await setDoc(doc(db, "users", user.uid), {
+          email,
+          name: "",
+          role: "",
+          phone: "",
+          address: "",
+          profileImage: ""
         });
+
+        alert("Signup successful!");
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        alert("Signup failed: " + error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
     });
   </script>
 </body>
