@@ -4,7 +4,7 @@ import {
   updateProfile, updatePassword
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, updateDoc
+  getFirestore, doc, getDoc, updateDoc, collection, getDocs
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import {
   getStorage, ref, uploadBytes, getDownloadURL
@@ -26,13 +26,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const db = getFirestore(app);
   const storage = getStorage(app);
 
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (!user) {
       window.location.href = "login.html";
       return;
     }
 
-    // All dashboard tab HTML templates
+    // Populate header greeting/avatar
+    const userHeaderName = document.getElementById("userName");
+    const headerAvatar = document.getElementById("headerAvatar");
+    if (userHeaderName) userHeaderName.textContent = user.displayName ? `Hi, ${user.displayName}` : "Hello";
+    if (headerAvatar) headerAvatar.src = user.photoURL || "default.jpg";
+
+    // Example: preload notification count (placeholder value)
+    const notifCountEl = document.getElementById("notifCount");
+    if (notifCountEl) notifCountEl.textContent = "0"; // TODO: wire to real data
+
     const tabs = {
       overviewTab: `
         <section class="dashboard-grid">
@@ -106,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `
     };
 
-    // Sidebar click handling
+    // Tab click handling
     ["overviewTab", "scheduleTab", "projectsTab", "profileTab"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
@@ -117,22 +126,23 @@ document.addEventListener("DOMContentLoaded", () => {
           if (id === "profileTab") {
             renderProfileTab(user);
           }
+          if (id === "overviewTab") {
+            loadOverviewMetrics();
+          }
         });
       }
     });
 
-    // Logout button
+    // Logout
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
-        signOut(auth).then(() => {
-          window.location.href = "login.html";
-        });
+        signOut(auth).then(() => window.location.href = "login.html");
       });
     }
   });
 
-  // Profile rendering/updating
+  // Profile tab logic
   async function renderProfileTab(user) {
     const uid = user.uid;
     const userRef = doc(db, "users", uid);
@@ -167,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
       previewImage.src = data.profileImage || "default.jpg";
     }
 
-    // Live preview
+        // Live preview
     nameInput.addEventListener("input", () => previewName.textContent = nameInput.value);
     roleInput.addEventListener("input", () => previewRole.textContent = roleInput.value);
     phoneInput.addEventListener("input", () => previewPhone.textContent = phoneInput.value);
@@ -176,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update profile
     const updateBtn = document.getElementById("updateProfileBtn");
     const profileMsg = document.getElementById("profileMsg");
+
     updateBtn.addEventListener("click", async () => {
       const name = nameInput.value.trim();
       const role = roleInput.value.trim();
@@ -208,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-        // Update password
+    // Update password
     const passBtn = document.getElementById("updatePasswordBtn");
     const passInput = document.getElementById("newPassword");
     const passwordMsg = document.getElementById("passwordMsg");
