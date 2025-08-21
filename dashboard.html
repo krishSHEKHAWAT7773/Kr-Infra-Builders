@@ -2,42 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard | KR Infra Builders</title>
+  <link rel="stylesheet" href="globals.css" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
-<body class="dashboard-theme">
+<body class="desktop">
 
-  <!-- Header -->
-  <header>
-    <h1 id="dashboardTitle">Welcome</h1>
-    <button id="logoutBtn">Logout</button>
-  </header>
+  <div class="overlap-wrapper">
+    <div class="overlap">
+      <div class="overlap-group">
+        <!-- Sidebar background -->
+        <div class="rectangle"></div>
+        <div class="LOGO"></div>
+        <div class="text-wrapper">Kr Infra Builders</div>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="brand">
-      <img src="logo.png" alt="KR Infra Logo" class="logo" />
-      <h3>KR Infra Builders</h3>
+        <!-- Nav Buttons -->
+        <div id="overviewTab" class="nav-item rectangle-2"><span class="text-wrapper-2">Dashboard</span></div>
+        <div id="scheduleTab" class="nav-item rectangle-6"><span class="text-wrapper-6">Schedule</span></div>
+        <div id="projectsTab" class="nav-item rectangle-5"><span class="text-wrapper-5">Projects</span></div>
+        <div id="profileTab" class="nav-item rectangle-4"><span class="text-wrapper-4">Profile</span></div>
+        <div id="logoutBtn" class="logout-btn rectangle-3"><span class="text-wrapper-3">Logout</span></div>
+
+        <!-- Top Bar -->
+        <div class="div"></div>
+        <img class="notifications" src="img/notifications.svg" alt="Notifications"/>
+        <div class="ellipse"></div>
+      </div>
+
+      <!-- Main Content Placeholder -->
+      <main id="dashboardContent" class="rectangle-7">
+        <!-- dashboard.js will inject panels here -->
+      </main>
     </div>
-    <nav>
-      <ul class="sidebar-nav">
-        <li id="overviewTab" class="nav-item active"><i class="fas fa-home"></i> Overview</li>
-        <li id="projectsTab" class="nav-item"><i class="fas fa-building"></i> Projects</li>
-        <li id="profileTab" class="nav-item"><i class="fas fa-user"></i> Profile</li>
-        <li id="settingsTab" class="nav-item"><i class="fas fa-cog"></i> Settings</li>
-      </ul>
-    </nav>
-  </aside>
-
-  <!-- Main Content -->
-  <main id="dashboardContent">
-    <section class="dashboard-panel">
-      <h2>Dashboard Overview</h2>
-      <p>This is your central hub for KR Infra Builders.</p>
-    </section>
-  </main>
+  </div>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"></script>

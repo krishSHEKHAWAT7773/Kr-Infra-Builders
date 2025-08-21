@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Tabs HTML definitions
+    // All dashboard tab HTML templates
     const tabs = {
       overviewTab: `
         <section class="dashboard-grid">
@@ -50,7 +50,18 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </section>
       `,
-      projectsTab: `<div class="dashboard-panel"><h2>Projects</h2><p>Track ongoing and completed projects here.</p></div>`,
+      scheduleTab: `
+        <div class="dashboard-panel">
+          <h2>Schedule</h2>
+          <p>Upcoming events, tasks, and deadlines will appear here.</p>
+        </div>
+      `,
+      projectsTab: `
+        <div class="dashboard-panel">
+          <h2>Projects</h2>
+          <p>Track ongoing and completed projects.</p>
+        </div>
+      `,
       profileTab: `
         <h2>Profile</h2>
         <div class="profile-card">
@@ -92,23 +103,25 @@ document.addEventListener("DOMContentLoaded", () => {
             <p><strong>Address:</strong> <span id="previewAddress">—</span></p>
           </div>
         </div>
-      `,
-      settingsTab: `<div class="dashboard-panel"><h2>Settings</h2><p>Adjust your preferences here.</p></div>`
+      `
     };
 
-    // Tab click handling
-    document.querySelectorAll(".nav-item").forEach(item => {
-      item.addEventListener("click", () => {
-        document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
-        item.classList.add("active");
-        document.getElementById("dashboardContent").innerHTML = tabs[item.id] || "";
-        if (item.id === "profileTab") {
-          renderProfileTab(user);
-        }
-      });
+    // Sidebar click handling
+    ["overviewTab", "scheduleTab", "projectsTab", "profileTab"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("click", () => {
+          document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+          el.classList.add("active");
+          document.getElementById("dashboardContent").innerHTML = tabs[id] || "";
+          if (id === "profileTab") {
+            renderProfileTab(user);
+          }
+        });
+      }
     });
 
-    // Logout
+    // Logout button
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
@@ -119,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Profile rendering/updating
   async function renderProfileTab(user) {
     const uid = user.uid;
     const userRef = doc(db, "users", uid);
@@ -153,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
       previewImage.src = data.profileImage || "default.jpg";
     }
 
-    // Live preview updates
+    // Live preview
     nameInput.addEventListener("input", () => previewName.textContent = nameInput.value);
     roleInput.addEventListener("input", () => previewRole.textContent = roleInput.value);
     phoneInput.addEventListener("input", () => previewPhone.textContent = phoneInput.value);
@@ -162,7 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update profile
     const updateBtn = document.getElementById("updateProfileBtn");
     const profileMsg = document.getElementById("profileMsg");
-
     updateBtn.addEventListener("click", async () => {
       const name = nameInput.value.trim();
       const role = roleInput.value.trim();
@@ -195,4 +208,65 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    //
+        // Update password
+    const passBtn = document.getElementById("updatePasswordBtn");
+    const passInput = document.getElementById("newPassword");
+    const passwordMsg = document.getElementById("passwordMsg");
+
+    passBtn.addEventListener("click", () => {
+      const newPass = passInput.value.trim();
+      passwordMsg.textContent = "";
+      passBtn.disabled = true;
+      passBtn.textContent = "Updating...";
+
+      if (newPass.length < 6) {
+        passwordMsg.textContent = "Password must be at least 6 characters.";
+        passwordMsg.className = "message error";
+        passBtn.disabled = false;
+        passBtn.textContent = "Update Password";
+        return;
+      }
+
+      updatePassword(user, newPass)
+        .then(() => {
+          passwordMsg.textContent = "Password updated successfully.";
+          passwordMsg.className = "message success";
+        })
+        .catch(err => {
+          passwordMsg.textContent = "Error: " + err.message;
+          passwordMsg.className = "message error";
+        })
+        .finally(() => {
+          passBtn.disabled = false;
+          passBtn.textContent = "Update Password";
+        });
+    });
+
+    // Image upload
+    const uploadBtn = document.getElementById("uploadImageBtn");
+    const imageInput = document.getElementById("imageUpload");
+
+    uploadBtn.addEventListener("click", async () => {
+      const file = imageInput.files[0];
+      if (!file) return;
+
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = "Uploading...";
+
+      try {
+        const storageRef = ref(storage, `profileImages/${uid}`);
+        await uploadBytes(storageRef, file);
+        const imageUrl = await getDownloadURL(storageRef);
+        await updateDoc(userRef, { profileImage: imageUrl });
+        profileImg.src = imageUrl;
+        previewImage.src = imageUrl;
+        alert("Profile image updated!");
+      } catch (err) {
+        alert("Error uploading image: " + err.message);
+      } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = "Upload Image";
+      }
+    });
+  } // end of renderProfileTab
+}); // end of DOMContentLoaded
