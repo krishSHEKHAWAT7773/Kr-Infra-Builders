@@ -479,3 +479,39 @@ button:disabled {
     padding: 16px;
   }
 }
+
+
+.dash-header {
+  position: fixed; top: 0; left: 240px; right: 0; height: 60px;
+  background: #1f1f1f; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 1.5rem; z-index: 100;
+}
+.header-actions { display: flex; align-items: center; gap: 1rem; }
+.notif-btn { position: relative; cursor: pointer; }
+.badge {
+  position: absolute; top: -4px; right: -6px;
+  background: #c62828; color: #fff; font-size: .7rem;
+  padding: 2px 6px; border-radius: 50%;
+}
+.avatar { width: 32px; height: 32px; border-radius: 50%; margin-right: .5rem; }
+
+
+.sidebar.collapsed { width: 60px; }
+.sidebar.collapsed .nav-item span { display: none; }
+.sidebar.collapsed .brand h3 { display: none; }
+
+
+.skeleton { animation: pulse 1.5s infinite; }
+.skeleton-line { background: #333; border-radius: 4px; margin-bottom: 8px; }
+.skeleton-line.title { width: 60%; height: 16px; }
+.skeleton-line.value { width: 40%; height: 24px; }
+@keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .4 } }
+
+
+#addProjectBtn { background:#ffca28; padding:8px 12px; border:none; border-radius:6px; }
+#addProjectBtn:hover { background:#ffc107; }
+
+
+body.light-mode { background:#f5f5f5; color:#111; }
+body.light-mode .sidebar { background:#fff; color:#000; }
+/* invert other panels accordingly */
