@@ -32,70 +32,83 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Tabs HTML definitions
     const tabs = {
-      homeTab: `<h2>Home</h2><p>Welcome to KR Infra Builders’ dashboard.</p>`,
-      projectsTab: `<h2>Projects</h2><p>Track ongoing and completed projects here.</p>`,
+      overviewTab: `
+        <section class="dashboard-grid">
+          <div class="dashboard-card">
+            <h3>Total Projects</h3>
+            <p id="totalProjects">Loading...</p>
+          </div>
+          <div class="dashboard-card">
+            <h3>Ongoing</h3>
+            <p id="ongoingCount">Loading...</p>
+          </div>
+          <div class="dashboard-card">
+            <h3>Completed</h3>
+            <p id="completedCount">Loading...</p>
+          </div>
+        </section>
+      `,
+      projectsTab: `<div class="dashboard-panel"><h2>Projects</h2><p>Track ongoing and completed projects here.</p></div>`,
       profileTab: `
-  <h2>Profile</h2>
-  <div class="profile-card">
-    <img id="profileImage" src="default.jpg" alt="Profile Image" class="profile-pic" />
-    <input type="file" id="imageUpload" />
-    <button id="uploadImageBtn">Upload Image</button>
+        <h2>Profile</h2>
+        <div class="profile-card">
+          <img id="profileImage" src="default.jpg" alt="Profile Image" class="profile-pic" />
+          <input type="file" id="imageUpload" />
+          <button id="uploadImageBtn">Upload Image</button>
 
-    <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+          <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
 
-    <label for="displayName">Display Name</label>
-    <input type="text" id="displayName" placeholder="Enter your name" />
+          <label for="displayName">Display Name</label>
+          <input type="text" id="displayName" placeholder="Enter your name" />
 
-    <label for="userRole">Role</label>
-    <input type="text" id="userRole" placeholder="Enter your role" />
+          <label for="userRole">Role</label>
+          <input type="text" id="userRole" placeholder="Enter your role" />
 
-    <label for="userPhone">Phone</label>
-    <input type="text" id="userPhone" placeholder="Enter your phone number" />
+          <label for="userPhone">Phone</label>
+          <input type="text" id="userPhone" placeholder="Enter your phone number" />
 
-    <label for="userAddress">Address</label>
-    <input type="text" id="userAddress" placeholder="Enter your address" />
+          <label for="userAddress">Address</label>
+          <input type="text" id="userAddress" placeholder="Enter your address" />
 
-    <button id="updateProfileBtn">Update Profile</button>
-    <div id="profileMsg" class="message"></div>
+          <button id="updateProfileBtn">Update Profile</button>
+          <div id="profileMsg" class="message"></div>
 
-    <hr />
+          <hr />
 
-    <label for="newPassword">New Password</label>
-    <input type="password" id="newPassword" placeholder="Enter new password" />
-    <button id="updatePasswordBtn">Update Password</button>
-    <div id="passwordMsg" class="message"></div>
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" placeholder="Enter new password" />
+          <button id="updatePasswordBtn">Update Password</button>
+          <div id="passwordMsg" class="message"></div>
 
-    <hr />
-    <h3>Live Profile Preview</h3>
-    <div class="preview-card">
-      <img id="previewImage" src="default.jpg" class="preview-pic" />
-      <p><strong>Name:</strong> <span id="previewName">—</span></p>
-      <p><strong>Role:</strong> <span id="previewRole">—</span></p>
-      <p><strong>Phone:</strong> <span id="previewPhone">—</span></p>
-      <p><strong>Address:</strong> <span id="previewAddress">—</span></p>
-    </div>
-  </div>
-`
+          <hr />
+          <h3>Live Profile Preview</h3>
+          <div class="preview-card">
+            <img id="previewImage" src="default.jpg" class="preview-pic" />
+            <p><strong>Name:</strong> <span id="previewName">—</span></p>
+            <p><strong>Role:</strong> <span id="previewRole">—</span></p>
+            <p><strong>Phone:</strong> <span id="previewPhone">—</span></p>
+            <p><strong>Address:</strong> <span id="previewAddress">—</span></p>
+          </div>
+        </div>
+      `,
+      settingsTab: `<div class="dashboard-panel"><h2>Settings</h2><p>Adjust your preferences here.</p></div>`
     };
 
-    Object.keys(tabs).forEach(id => {
-      const tab = document.getElementById(id);
-      if (tab) {
-        tab.addEventListener("click", () => {
-          document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
-          tab.classList.add("active");
-
-          const content = document.getElementById("dashboardContent");
-          content.innerHTML = tabs[id];
-
-          if (id === "profileTab") {
-            renderProfileTab(user);
-          }
-        });
-      }
+    // Tab click handling
+    document.querySelectorAll(".nav-item").forEach(item => {
+      item.addEventListener("click", () => {
+        document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+        item.classList.add("active");
+        document.getElementById("dashboardContent").innerHTML = tabs[item.id] || "";
+        if (item.id === "profileTab") {
+          renderProfileTab(user);
+        }
+      });
     });
 
+    // Logout
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
@@ -140,11 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
       previewImage.src = data.profileImage || "default.jpg";
     }
 
+    // Live preview updates
     nameInput.addEventListener("input", () => previewName.textContent = nameInput.value);
     roleInput.addEventListener("input", () => previewRole.textContent = roleInput.value);
     phoneInput.addEventListener("input", () => previewPhone.textContent = phoneInput.value);
     addressInput.addEventListener("input", () => previewAddress.textContent = addressInput.value);
 
+    // Update profile
     const updateBtn = document.getElementById("updateProfileBtn");
     const profileMsg = document.getElementById("profileMsg");
 
@@ -180,63 +195,4 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    const passBtn = document.getElementById("updatePasswordBtn");
-    const passInput = document.getElementById("newPassword");
-    const passwordMsg = document.getElementById("passwordMsg");
-
-    passBtn.addEventListener("click", () => {
-      const newPass = passInput.value.trim();
-      passwordMsg.textContent = "";
-      passBtn.disabled = true;
-      passBtn.textContent = "Updating...";
-
-      if (newPass.length < 6) {
-        passwordMsg.textContent = "Password must be at least 6 characters.";
-        passwordMsg.className = "message error";
-        passBtn.disabled = false;
-        passBtn.textContent = "Update Password";
-        return;
-      }
-
-      updatePassword(user, newPass)
-        .then(() => {
-          passwordMsg.textContent = "Password updated successfully.";
-          passwordMsg.className = "message success";
-        })
-        .catch(err => {
-          passwordMsg.textContent = "Error: " + err.message;
-          passwordMsg.className = "message error";
-        })
-        .finally(() => {
-          passBtn.disabled = false;
-          passBtn.textContent = "Update Password";
-        });
-    });
-
-        const uploadBtn = document.getElementById("uploadImageBtn");
-    const imageInput = document.getElementById("imageUpload");
-
-    uploadBtn.addEventListener("click", async () => {
-      const file = imageInput.files[0];
-      if (!file) return;
-
-      uploadBtn.disabled = true;
-      uploadBtn.textContent = "Uploading...";
-
-      try {
-        const storageRef = ref(storage, `profileImages/${uid}`);
-        await uploadBytes(storageRef, file);
-        const imageUrl = await getDownloadURL(storageRef);
-        await updateDoc(userRef, { profileImage: imageUrl });
-        profileImg.src = imageUrl;
-        previewImage.src = imageUrl;
-        alert("Profile image updated!");
-      } catch (err) {
-        alert("Error uploading image: " + err.message);
-      } finally {
-        uploadBtn.disabled = false;
-        uploadBtn.textContent = "Upload Image";
-      }
-    });
-  }
-});
+    //

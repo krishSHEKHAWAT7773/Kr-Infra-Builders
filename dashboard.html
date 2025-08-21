@@ -6,29 +6,16 @@
   <title>Dashboard | KR Infra Builders</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    .preview-card {
-      border: 1px solid #ccc;
-      padding: 12px;
-      margin-top: 10px;
-      background: #f9f9f9;
-      border-radius: 8px;
-    }
-    .preview-pic {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
-  </style>
 </head>
 <body class="dashboard-theme">
+
+  <!-- Header -->
   <header>
-    <h1>Welcome, User</h1>
+    <h1 id="dashboardTitle">Welcome</h1>
     <button id="logoutBtn">Logout</button>
   </header>
 
+  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="brand">
       <img src="logo.png" alt="KR Infra Logo" class="logo" />
@@ -36,16 +23,20 @@
     </div>
     <nav>
       <ul class="sidebar-nav">
-        <li class="nav-item active"><i class="fas fa-home"></i> Dashboard</li>
+        <li id="overviewTab" class="nav-item active"><i class="fas fa-home"></i> Overview</li>
+        <li id="projectsTab" class="nav-item"><i class="fas fa-building"></i> Projects</li>
         <li id="profileTab" class="nav-item"><i class="fas fa-user"></i> Profile</li>
-        <li class="nav-item"><i class="fas fa-cog"></i> Settings</li>
+        <li id="settingsTab" class="nav-item"><i class="fas fa-cog"></i> Settings</li>
       </ul>
     </nav>
   </aside>
 
+  <!-- Main Content -->
   <main id="dashboardContent">
-    <h2>Dashboard Overview</h2>
-    <p>This is your central hub for KR Infra Builders.</p>
+    <section class="dashboard-panel">
+      <h2>Dashboard Overview</h2>
+      <p>This is your central hub for KR Infra Builders.</p>
+    </section>
   </main>
 
   <!-- Firebase SDKs -->
@@ -54,7 +45,7 @@
   <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js"></script>
 
-  <!-- Main Dashboard Logic -->
+  <!-- Dashboard Logic -->
   <script type="module" src="dashboard.js"></script>
 </body>
 </html>
