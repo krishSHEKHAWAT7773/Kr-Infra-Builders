@@ -12,8 +12,9 @@
 
   <div class="overlap-wrapper">
     <div class="overlap">
-      <div class="overlap-group">
-        <!-- Sidebar background -->
+
+      <!-- ====== SIDEBAR ====== -->
+      <aside class="overlap-group sidebar">
         <div class="rectangle"></div>
         <div class="LOGO"></div>
         <div class="text-wrapper">Kr Infra Builders</div>
@@ -24,17 +25,31 @@
         <div id="projectsTab" class="nav-item rectangle-5"><span class="text-wrapper-5">Projects</span></div>
         <div id="profileTab" class="nav-item rectangle-4"><span class="text-wrapper-4">Profile</span></div>
         <div id="logoutBtn" class="logout-btn rectangle-3"><span class="text-wrapper-3">Logout</span></div>
+      </aside>
 
-        <!-- Top Bar -->
-        <div class="div"></div>
-        <img class="notifications" src="img/notifications.svg" alt="Notifications"/>
-        <div class="ellipse"></div>
-      </div>
+      <!-- ====== HEADER BAR ====== -->
+      <header class="dash-header div">
+        <div class="header-left">
+          <button id="sidebarToggle" class="hamburger"><i class="fas fa-bars"></i></button>
+        </div>
+        <div class="header-right">
+          <div id="notifBtn" class="notif-btn">
+            <i class="fas fa-bell"></i>
+            <span id="notifCount" class="badge">0</span>
+          </div>
+          <div class="user-menu">
+            <img src="default.jpg" alt="User" class="avatar" id="headerAvatar"/>
+            <span id="userName">Hello</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+        </div>
+      </header>
 
-      <!-- Main Content Placeholder -->
+      <!-- ====== MAIN CONTENT ====== -->
       <main id="dashboardContent" class="rectangle-7">
         <!-- dashboard.js will inject panels here -->
       </main>
+
     </div>
   </div>
 
