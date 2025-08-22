@@ -4,11 +4,9 @@ import {
   updateProfile, updatePassword
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, updateDoc, collection, getDocs
+  getFirestore, doc, getDoc, updateDoc,
+  collection, getDocs, query, where, orderBy, Timestamp
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import {
-  getStorage, ref, uploadBytes, getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const firebaseConfig = {
@@ -24,60 +22,61 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const storage = getStorage(app);
 
-  onAuthStateChanged(auth, async (user) => {
+  onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location.href = "login.html";
       return;
     }
 
-    // Populate header greeting/avatar
+    // Populate header greeting
     const userHeaderName = document.getElementById("userName");
-    const headerAvatar = document.getElementById("headerAvatar");
     if (userHeaderName) userHeaderName.textContent = user.displayName ? `Hi, ${user.displayName}` : "Hello";
-    if (headerAvatar) headerAvatar.src = user.photoURL || "default.jpg";
-
-    // Example: preload notification count (placeholder value)
-    const notifCountEl = document.getElementById("notifCount");
-    if (notifCountEl) notifCountEl.textContent = "0"; // TODO: wire to real data
 
     const tabs = {
       overviewTab: `
         <section class="dashboard-grid">
           <div class="dashboard-card">
-            <h3>Total Projects</h3>
-            <p id="totalProjects">Loading...</p>
+            <h3>Active Projects</h3>
+            <p id="activeCount">Loading...</p>
           </div>
           <div class="dashboard-card">
-            <h3>Ongoing</h3>
-            <p id="ongoingCount">Loading...</p>
+            <h3>Near Deadline</h3>
+            <p id="nearDeadlineCount">Loading...</p>
           </div>
           <div class="dashboard-card">
-            <h3>Completed</h3>
+            <h3>Completed Projects</h3>
             <p id="completedCount">Loading...</p>
           </div>
         </section>
       `,
-      scheduleTab: `
-        <div class="dashboard-panel">
-          <h2>Schedule</h2>
-          <p>Upcoming events, tasks, and deadlines will appear here.</p>
-        </div>
-      `,
       projectsTab: `
         <div class="dashboard-panel">
           <h2>Projects</h2>
-          <p>Track ongoing and completed projects.</p>
+          <table class="project-table" style="width:100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Completion</th>
+                <th>Lead</th>
+              </tr>
+            </thead>
+            <tbody id="projectsTableBody"></tbody>
+          </table>
+        </div>
+      `,
+      scheduleTab: `
+        <div class="dashboard-panel">
+          <h2>Schedule</h2>
+          <ul id="scheduleList"></ul>
         </div>
       `,
       profileTab: `
         <h2>Profile</h2>
         <div class="profile-card">
-          <img id="profileImage" src="default.jpg" alt="Profile Image" class="profile-pic" />
-          <input type="file" id="imageUpload" />
-          <button id="uploadImageBtn">Upload Image</button>
-
           <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
 
           <label for="displayName">Display Name</label>
@@ -101,37 +100,29 @@ document.addEventListener("DOMContentLoaded", () => {
           <input type="password" id="newPassword" placeholder="Enter new password" />
           <button id="updatePasswordBtn">Update Password</button>
           <div id="passwordMsg" class="message"></div>
-
-          <hr />
-          <h3>Live Profile Preview</h3>
-          <div class="preview-card">
-            <img id="previewImage" src="default.jpg" class="preview-pic" />
-            <p><strong>Name:</strong> <span id="previewName">—</span></p>
-            <p><strong>Role:</strong> <span id="previewRole">—</span></p>
-            <p><strong>Phone:</strong> <span id="previewPhone">—</span></p>
-            <p><strong>Address:</strong> <span id="previewAddress">—</span></p>
-          </div>
         </div>
       `
     };
 
     // Tab click handling
-    ["overviewTab", "scheduleTab", "projectsTab", "profileTab"].forEach(id => {
+    ["overviewTab", "projectsTab", "scheduleTab", "profileTab"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener("click", () => {
           document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
           el.classList.add("active");
           document.getElementById("dashboardContent").innerHTML = tabs[id] || "";
-          if (id === "profileTab") {
-            renderProfileTab(user);
-          }
-          if (id === "overviewTab") {
-            loadOverviewMetrics();
-          }
+
+          if (id === "overviewTab") loadOverview();
+          if (id === "projectsTab") loadProjects();
+          if (id === "scheduleTab") loadSchedule();
+          if (id === "profileTab") renderProfileTab(user);
         });
       }
     });
+
+    // Default tab
+    document.getElementById("overviewTab").click();
 
     // Logout
     const logoutBtn = document.getElementById("logoutBtn");
@@ -142,6 +133,67 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Load Overview counts
+  async function loadOverview() {
+    const projectsRef = collection(db, "projects");
+    const snapshot = await getDocs(projectsRef);
+    const now = new Date();
+    let active = 0, nearDeadline = 0, completed = 0;
+
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      if (data.status === "ongoing") active++;
+      if (data.status === "completed") completed++;
+      if (data.endDate && data.status === "ongoing") {
+        const end = data.endDate.toDate();
+        const diffDays = (end - now) / (1000 * 60 * 60 * 24);
+        if (diffDays <= 7 && diffDays >= 0) nearDeadline++;
+      }
+    });
+
+    document.getElementById("activeCount").textContent = active;
+    document.getElementById("nearDeadlineCount").textContent = nearDeadline;
+    document.getElementById("completedCount").textContent = completed;
+  }
+
+  // Load Projects list
+  async function loadProjects() {
+    const tbody = document.getElementById("projectsTableBody");
+    const snapshot = await getDocs(collection(db, "projects"));
+    tbody.innerHTML = "";
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${data.name}</td>
+        <td>${data.status}</td>
+        <td>${data.startDate ? data.startDate.toDate().toLocaleDateString() : ""}</td>
+        <td>${data.endDate ? data.endDate.toDate().toLocaleDateString() : ""}</td>
+        <td>${data.completion || 0}%</td>
+        <td>${data.lead || ""}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Load Schedule list
+  async function loadSchedule() {
+    const list = document.getElementById("scheduleList");
+    const scheduleSnap = await getDocs(query(collection(db, "schedule"), orderBy("date")));
+    list.innerHTML = "";
+    for (const docSnap of scheduleSnap.docs) {
+      const data = docSnap.data();
+      let projectName = "";
+      if (data.projectId) {
+        const projDoc = await getDoc(doc(db, "projects", data.projectId));
+        if (projDoc.exists()) projectName = projDoc.data().name;
+      }
+      const li = document.createElement("li");
+      li.textContent = `${data.title} (${projectName}) - ${data.date.toDate().toLocaleDateString()}`;
+      list.appendChild(li);
+    }
+  }
+
   // Profile tab logic
   async function renderProfileTab(user) {
     const uid = user.uid;
@@ -151,15 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const emailSpan = document.getElementById("userEmail");
     const nameInput = document.getElementById("displayName");
     const roleInput = document.getElementById("userRole");
-    const profileImg = document.getElementById("profileImage");
     const phoneInput = document.getElementById("userPhone");
     const addressInput = document.getElementById("userAddress");
-
-    const previewName = document.getElementById("previewName");
-    const previewRole = document.getElementById("previewRole");
-    const previewPhone = document.getElementById("previewPhone");
-    const previewAddress = document.getElementById("previewAddress");
-    const previewImage = document.getElementById("previewImage");
 
     if (userSnap.exists()) {
       const data = userSnap.data();
@@ -168,22 +213,9 @@ document.addEventListener("DOMContentLoaded", () => {
       roleInput.value = data.role || "";
       phoneInput.value = data.phone || "";
       addressInput.value = data.address || "";
-      profileImg.src = data.profileImage || "default.jpg";
-
-      previewName.textContent = data.name || "—";
-      previewRole.textContent = data.role || "—";
-      previewPhone.textContent = data.phone || "—";
-      previewAddress.textContent = data.address || "—";
-      previewImage.src = data.profileImage || "default.jpg";
     }
 
-        // Live preview
-    nameInput.addEventListener("input", () => previewName.textContent = nameInput.value);
-    roleInput.addEventListener("input", () => previewRole.textContent = roleInput.value);
-    phoneInput.addEventListener("input", () => previewPhone.textContent = phoneInput.value);
-    addressInput.addEventListener("input", () => previewAddress.textContent = addressInput.value);
-
-    // Update profile
+        // Update profile
     const updateBtn = document.getElementById("updateProfileBtn");
     const profileMsg = document.getElementById("profileMsg");
 
@@ -251,33 +283,6 @@ document.addEventListener("DOMContentLoaded", () => {
           passBtn.disabled = false;
           passBtn.textContent = "Update Password";
         });
-    });
-
-    // Image upload
-    const uploadBtn = document.getElementById("uploadImageBtn");
-    const imageInput = document.getElementById("imageUpload");
-
-    uploadBtn.addEventListener("click", async () => {
-      const file = imageInput.files[0];
-      if (!file) return;
-
-      uploadBtn.disabled = true;
-      uploadBtn.textContent = "Uploading...";
-
-      try {
-        const storageRef = ref(storage, `profileImages/${uid}`);
-        await uploadBytes(storageRef, file);
-        const imageUrl = await getDownloadURL(storageRef);
-        await updateDoc(userRef, { profileImage: imageUrl });
-        profileImg.src = imageUrl;
-        previewImage.src = imageUrl;
-        alert("Profile image updated!");
-      } catch (err) {
-        alert("Error uploading image: " + err.message);
-      } finally {
-        uploadBtn.disabled = false;
-        uploadBtn.textContent = "Upload Image";
-      }
     });
   } // end of renderProfileTab
 }); // end of DOMContentLoaded
