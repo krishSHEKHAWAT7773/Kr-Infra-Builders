@@ -285,4 +285,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
   } // end of renderProfileTab
+  // Theme toggle logic
+const themeToggleBtn = document.getElementById("themeToggleBtn");
+
+// Load saved theme from localStorage
+if (localStorage.getItem("theme") === "light") {
+  document.body.classList.add("light-mode");
+  themeToggleBtn.textContent = "☀️";
+}
+
+themeToggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+  const isLight = document.body.classList.contains("light-mode");
+  themeToggleBtn.textContent = isLight ? "☀️" : "🌙";
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+});
 }); // end of DOMContentLoaded

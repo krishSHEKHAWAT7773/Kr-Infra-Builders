@@ -605,3 +605,31 @@ body.light-mode .profile-card button {
   background: linear-gradient(to right, #ffca28, #ffc107);
   color: #000;
 }
+
+
+
+#themeToggleBtn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #ffca28;
+  transition: transform 0.2s ease;
+}
+#themeToggleBtn:hover {
+  transform: scale(1.2);
+}
+body.light-mode #themeToggleBtn {
+  color: #111;
+}
+
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+#dashboardContent,
+.dashboard-panel,
+.dashboard-card,
+.profile-card {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
