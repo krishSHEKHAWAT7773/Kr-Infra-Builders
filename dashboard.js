@@ -5,10 +5,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, updateDoc,
-  collection, getDocs, query, orderBy
+  collection, getDocs, query, orderBy, addDoc
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-import { addDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const firebaseConfig = {
@@ -24,6 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  const addProjectBtn = document.getElementById("addProjectBtn");
+
+  // Show/hide FAB based on active tab
+  function toggleAddButton(tabId) {
+    if (addProjectBtn) {
+      addProjectBtn.style.display = tabId === "projectsTab" ? "block" : "none";
+    }
+  }
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return window.location.href = "login.html";
@@ -87,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
           document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
           el.classList.add("active");
           document.getElementById("dashboardContent").innerHTML = tabs[id] || "";
+          toggleAddButton(id); // ✅ Show/hide FAB
           if (id === "overviewTab") loadOverview();
           if (id === "scheduleTab") loadSchedule();
           if (id === "projectsTab") loadProjects();
@@ -265,54 +273,59 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  document.getElementById("addProjectBtn").addEventListener("click", () => {
-  const modal = document.createElement("div");
-  modal.className = "modal-overlay";
-  modal.innerHTML = `
-    <div class="modal">
-      <h2>Add New Project</h2>
-      <input type="text" id="newProjectName" placeholder="Project Name" />
-      <input type="text" id="newProjectLead" placeholder="Project Lead" />
-      <input type="date" id="newProjectStart" />
-      <input type="date" id="newProjectEnd" />
-      <button id="saveProjectBtn">Save</button>
-      <button id="cancelProjectBtn">Cancel</button>
-      <div id="projectMsg" class="message"></div>
-    </div>
-  `;
-  document.body.appendChild(modal);
+  // Add Project Modal Logic
+  if (addProjectBtn) {
+    addProjectBtn.addEventListener("click", () => {
+      const modal = document.createElement("div");
+      modal.className = "modal-overlay";
+      modal.innerHTML = `
+        <div class="modal">
+          <h2>Add New Project</h2>
+          <input type="text" id="newProjectName" placeholder="Project Name" />
+          <input type="text" id="newProjectLead" placeholder="Project Lead" />
+          <input type="date" id="newProjectStart" />
+          <input type="date" id="newProjectEnd" />
+          <button id="saveProjectBtn">Save</button>
+          <button id="cancelProjectBtn">Cancel</button>
+          <div id="projectMsg" class="message"></div>
+        </div>
+      `;
+      document.body.appendChild(modal);
 
-  document.getElementById("cancelProjectBtn").onclick = () => modal.remove();
+      document.getElementById("cancelProjectBtn").onclick = () => modal.remove();
 
-  document.getElementById("saveProjectBtn").onclick = async () => {
-    const name = document.getElementById("newProjectName").value.trim();
-    const lead = document.getElementById("newProjectLead").value.trim();
-    const start = document.getElementById("newProjectStart").value;
-    const end = document.getElementById("newProjectEnd").value;
-    const msg = document.getElementById("projectMsg");
+      document.getElementById("saveProjectBtn").onclick = async () => {
+        const name = document.getElementById("newProjectName").value.trim();
+        const lead = document.getElementById("newProjectLead").value.trim();
+        const start = document.getElementById("newProjectStart").value;
+        const end = document.getElementById("newProjectEnd").value;
+        const msg = document.getElementById("projectMsg");
 
-    if (!name || !lead || !start || !end) {
-      msg.textContent = "All fields are required.";
-      msg.className = "message error";
-      return;
-    }
+        if (!name || !lead || !start || !end) {
+          msg.textContent = "All fields are required.";
+          msg.className = "message error";
+          return;
+        }
 
-    try {
-      await addDoc(collection(db, "projects"), {
-        name,
-        lead,
-        startDate: new Date(start),
-        endDate: new Date(end),
-        status: "ongoing",
-        completion: 0
-      });
-      msg.textContent = "Project added successfully.";
-      msg.className = "message success";
-      setTimeout(() => modal.remove(), 1000);
-    } catch (err) {
-      msg.textContent = "Error: " + err.message;
-      msg.className = "message error";
-    }
-  };
-});
+        try {
+          await addDoc(collection(db, "projects"), {
+            name,
+            lead,
+            startDate: new Date(start),
+            endDate: new Date(end),
+            status: "ongoing",
+            completion: 0
+          });
+          msg.textContent = "Project added successfully.";
+          msg.className = "message success";
+          setTimeout(() => modal.remove(), 1000);
+          loadProjects(); // refresh table
+        } catch (err) {
+          msg.textContent = "Error: " + err.message;
+          msg.className = "message error";
+        }
+      };
+    });
+  }
+
 });
