@@ -289,7 +289,6 @@ function showToast(message, type = "success") {
 }
 
 // Add Project Modal Logic
-const addProjectBtn = document.getElementById("addProjectBtn");
 if (addProjectBtn) {
   addProjectBtn.addEventListener("click", () => {
     const modal = document.createElement("div");
@@ -324,6 +323,7 @@ if (addProjectBtn) {
         <button id="cancelProjectBtn">Cancel</button>
       </div>
     `;
+
     document.body.appendChild(modal);
 
     // Cancel button closes modal
