@@ -721,3 +721,15 @@ body,
   border: 1px solid #ccc;
   border-radius: 6px;
 }
+
+.message.error {
+  color: #b71c1c; /* dark red text */
+  background: #ffebee; /* light red background */
+  border: 1px solid #ef9a9a;
+}
+
+.message.success {
+  color: #1b5e20; /* dark green text */
+  background: #e8f5e9; /* light green background */
+  border: 1px solid #a5d6a7;
+}

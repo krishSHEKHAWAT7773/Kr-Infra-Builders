@@ -335,7 +335,8 @@ document.addEventListener("DOMContentLoaded", () => {
       startDate: new Date(start),
       endDate: new Date(end),
       status,
-      completion
+      completion,
+      ownerUID: auth.currentUser.uid // ✅ This matches your Firestore rule
     });
     msg.textContent = "Project added successfully.";
     msg.className = "message success";
