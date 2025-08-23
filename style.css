@@ -514,7 +514,6 @@ footer {
   border-radius: 50%;
   font-weight: bold;
 }
-/* Sidebar collapsed state affects header offset */
 .sidebar.collapsed ~ .dash-header {
   left: 60px;
 }
@@ -554,19 +553,27 @@ footer {
 }
 
 /* ===================== */
-/* ➕ Utility Buttons */
+/* ➕ Floating Add Button */
 /* ===================== */
 #addProjectBtn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
   background: #ffca28;
-  padding: 8px 12px;
+  color: #000;
   border: none;
-  border-radius: 6px;
-  font-weight: 600;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   cursor: pointer;
-  transition: background 0.3s ease;
+  z-index: 200;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 #addProjectBtn:hover {
   background: #ffc107;
+  transform: scale(1.1);
 }
 
 /* ===================== */
@@ -610,6 +617,12 @@ body.light-mode .profile-card button {
   background: linear-gradient(to right, #ffca28, #ffc107);
   color: #000;
 }
+body.light-mode .toast.success {
+  background: #388e3c;
+}
+body.light-mode .toast.error {
+  background: #c62828;
+}
 
 /* ===================== */
 /* 🌙 Theme Toggle Button */
@@ -638,30 +651,9 @@ body,
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-
-
-#addProjectBtn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: #ffca28;
-  color: #000;
-  border: none;
-  border-radius: 50%;
-  width: 56px;
-  height: 56px;
-  font-size: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  cursor: pointer;
-  z-index: 200;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-#addProjectBtn:hover {
-  background: #ffc107;
-  transform: scale(1.1);
-}
-
-
+/* ===================== */
+/* 🧩 Modal Styles */
+/* ===================== */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -683,12 +675,20 @@ body,
   margin-bottom: 16px;
   color: #ff9800;
 }
-.modal input {
+.modal input,
+.modal select,
+.modal input[type="number"] {
   width: 100%;
   padding: 10px;
   margin-bottom: 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
+}
+.modal label {
+  display: block;
+  margin-top: 8px;
+  font-weight: 500;
+  color: #333;
 }
 .modal button {
   padding: 10px 16px;
@@ -707,35 +707,17 @@ body,
   color: #fff;
 }
 
-.modal label {
-  display: block;
-  margin-top: 8px;
-  font-weight: 500;
-  color: #333;
-}
-.modal select,
-.modal input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+/* Responsive modal */
+@media (max-width: 480px) {
+  .modal {
+    width: 90%;
+    padding: 16px;
+  }
 }
 
-.message.error {
-  color: #b71c1c; /* dark red text */
-  background: #ffebee; /* light red background */
-  border: 1px solid #ef9a9a;
-}
-
-.message.success {
-  color: #1b5e20; /* dark green text */
-  background: #e8f5e9; /* light green background */
-  border: 1px solid #a5d6a7;
-}
-
-
-
+/* ===================== */
+/* ✅ Toast Notifications */
+/* ===================== */
 #toastContainer {
   position: fixed;
   top: 20px;
@@ -745,7 +727,6 @@ body,
   flex-direction: column;
   gap: 12px;
 }
-
 .toast {
   padding: 12px 20px;
   border-radius: 8px;
@@ -754,20 +735,50 @@ body,
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   animation: slideIn 0.3s ease, fadeOut 0.3s ease 3s forwards;
 }
-
 .toast.success {
   background: #4caf50;
 }
-
 .toast.error {
   background: #f44336;
 }
-
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(100px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-
 @keyframes fadeOut {
   to { opacity: 0; transform: translateX(100px); }
+}
+
+/* ===================== */
+/* 📣 Message Feedback */
+/* ===================== */
+.message {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.message.success {
+  color: #1b5e20;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+}
+
+.message.error {
+  color: #b71c1c;
+  background: #ffebee;
+  border: 1px solid #ef9a9a;
+}
+
+/* Optional: Light mode overrides for better contrast */
+body.light-mode .message.success {
+  background: #dcedc8;
+  color: #2e7d32;
+}
+
+body.light-mode .message.error {
+  background: #ffcdd2;
+  color: #c62828;
 }
