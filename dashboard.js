@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const addProjectBtn = document.getElementById("addProjectBtn");
 
-  // Show/hide FAB based on active tab
   function toggleAddButton(tabId) {
     if (addProjectBtn) {
       addProjectBtn.style.display = tabId === "projectsTab" ? "block" : "none";
@@ -36,7 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!user) return window.location.href = "login.html";
 
     const userHeaderName = document.getElementById("userName");
-    if (userHeaderName) userHeaderName.textContent = user.displayName ? `Hi, ${user.displayName}` : "Hi";
+    if (userHeaderName) {
+      userHeaderName.textContent = user.displayName ? `Hi, ${user.displayName}` : "Hi";
+    }
 
     const tabs = {
       overviewTab: `
@@ -86,15 +87,17 @@ document.addEventListener("DOMContentLoaded", () => {
       `
     };
 
-    // Tab switching
-    ["overviewTab", "scheduleTab", "projectsTab", "profileTab"].forEach(id => {
+    // Tab switching logic
+    const tabIds = ["overviewTab", "scheduleTab", "projectsTab", "profileTab"];
+    tabIds.forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener("click", () => {
           document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
           el.classList.add("active");
           document.getElementById("dashboardContent").innerHTML = tabs[id] || "";
-          toggleAddButton(id); // ✅ Show/hide FAB
+          toggleAddButton(id);
+
           if (id === "overviewTab") loadOverview();
           if (id === "scheduleTab") loadSchedule();
           if (id === "projectsTab") loadProjects();
@@ -103,159 +106,154 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Default tab
+    // Load default tab after listeners are set
     document.getElementById("overviewTab").click();
 
-    // Logout
+    // Logout logic
     const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) logoutBtn.addEventListener("click", () => signOut(auth).then(() => window.location.href = "login.html"));
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        signOut(auth).then(() => {
+          showToast("Logged out successfully", "success");
+          window.location.href = "login.html";
+        }).catch(err => {
+          showToast("Logout failed: " + err.message, "error");
+        });
+      });
+    }
   });
 
-  // Overview logic
-  async function loadOverview() {
-    const snapshot = await getDocs(collection(db, "projects"));
-    let active = 0, nearDeadline = 0, completed = 0;
-    const now = new Date();
+// Overview logic
+async function loadOverview() {
+  const snapshot = await getDocs(collection(db, "projects"));
+  let active = 0, nearDeadline = 0, completed = 0;
+  const now = new Date();
 
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      if (data.status === "ongoing") active++;
-      if (data.status === "completed") completed++;
-      if (data.endDate && data.status === "ongoing") {
-        const end = data.endDate.toDate();
-        const diff = (end - now) / (1000 * 60 * 60 * 24);
-        if (diff <= 7 && diff >= 0) nearDeadline++;
-      }
-    });
-
-    document.getElementById("activeCount").textContent = active;
-    document.getElementById("nearDeadlineCount").textContent = nearDeadline;
-    document.getElementById("completedCount").textContent = completed;
-  }
-
-  // Projects logic
-  async function loadProjects() {
-    const tbody = document.getElementById("projectsTableBody");
-    const snapshot = await getDocs(collection(db, "projects"));
-    tbody.innerHTML = "";
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${data.name}</td>
-        <td><span class="status-badge status-${data.status}">${data.status}</span></td>
-        <td>${data.startDate?.toDate().toLocaleDateString()}</td>
-        <td>${data.endDate?.toDate().toLocaleDateString()}</td>
-        <td>${data.completion || 0}%</td>
-        <td>${data.lead || ""}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  // Schedule logic
-  async function loadSchedule() {
-    const list = document.getElementById("scheduleList");
-    const scheduleSnap = await getDocs(query(collection(db, "schedule"), orderBy("date")));
-    list.innerHTML = "";
-    for (const docSnap of scheduleSnap.docs) {
-      const data = docSnap.data();
-      let projectName = "";
-      if (data.projectId) {
-        const projDoc = await getDoc(doc(db, "projects", data.projectId));
-        if (projDoc.exists()) projectName = projDoc.data().name;
-      }
-      const li = document.createElement("li");
-      li.textContent = `${data.title} (${projectName}) – ${data.date.toDate().toLocaleDateString()}`;
-      list.appendChild(li);
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.status === "ongoing") active++;
+    if (data.status === "completed") completed++;
+    if (data.endDate && data.status === "ongoing") {
+      const end = data.endDate.toDate();
+      const diff = (end - now) / (1000 * 60 * 60 * 24);
+      if (diff <= 7 && diff >= 0) nearDeadline++;
     }
+  });
+
+  document.getElementById("activeCount").textContent = active;
+  document.getElementById("nearDeadlineCount").textContent = nearDeadline;
+  document.getElementById("completedCount").textContent = completed;
+}
+
+// Projects logic
+async function loadProjects() {
+  const tbody = document.getElementById("projectsTableBody");
+  const snapshot = await getDocs(collection(db, "projects"));
+  tbody.innerHTML = "";
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${data.name}</td>
+      <td><span class="status-badge status-${data.status}">${data.status}</span></td>
+      <td>${data.startDate?.toDate().toLocaleDateString()}</td>
+      <td>${data.endDate?.toDate().toLocaleDateString()}</td>
+      <td>${data.completion || 0}%</td>
+      <td>${data.lead || ""}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Schedule logic
+async function loadSchedule() {
+  const list = document.getElementById("scheduleList");
+  const scheduleSnap = await getDocs(query(collection(db, "schedule"), orderBy("date")));
+  list.innerHTML = "";
+  for (const docSnap of scheduleSnap.docs) {
+    const data = docSnap.data();
+    let projectName = "";
+    if (data.projectId) {
+      const projDoc = await getDoc(doc(db, "projects", data.projectId));
+      if (projDoc.exists()) projectName = projDoc.data().name;
+    }
+    const li = document.createElement("li");
+    li.textContent = `${data.title} (${projectName}) – ${data.date.toDate().toLocaleDateString()}`;
+    list.appendChild(li);
+  }
+}
+
+// Profile logic
+async function renderProfileTab(user) {
+  const uid = user.uid;
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+
+  const emailSpan = document.getElementById("userEmail");
+  const nameInput = document.getElementById("displayName");
+  const roleInput = document.getElementById("userRole");
+  const phoneInput = document.getElementById("userPhone");
+  const addressInput = document.getElementById("userAddress");
+
+  if (userSnap.exists()) {
+    const data = userSnap.data();
+    emailSpan.textContent = data.email || user.email;
+    nameInput.value = data.name || "";
+    roleInput.value = data.role || "";
+    phoneInput.value = data.phone || "";
+    addressInput.value = data.address || "";
   }
 
-    // Profile logic
-  async function renderProfileTab(user) {
-    const uid = user.uid;
-    const userRef = doc(db, "users", uid);
-    const userSnap = await getDoc(userRef);
+  // Update profile
+  const updateBtn = document.getElementById("updateProfileBtn");
+  updateBtn.addEventListener("click", async () => {
+    const name = nameInput.value.trim();
+    const role = roleInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const address = addressInput.value.trim();
 
-    const emailSpan = document.getElementById("userEmail");
-    const nameInput = document.getElementById("displayName");
-    const roleInput = document.getElementById("userRole");
-    const phoneInput = document.getElementById("userPhone");
-    const addressInput = document.getElementById("userAddress");
+    updateBtn.disabled = true;
+    updateBtn.textContent = "Updating...";
 
-    if (userSnap.exists()) {
-      const data = userSnap.data();
-      emailSpan.textContent = data.email || user.email;
-      nameInput.value = data.name || "";
-      roleInput.value = data.role || "";
-      phoneInput.value = data.phone || "";
-      addressInput.value = data.address || "";
+    try {
+      await updateProfile(user, { displayName: name });
+      await updateDoc(userRef, { name, role, phone, address });
+      showToast("Profile updated successfully.", "success");
+    } catch (err) {
+      showToast("Error: " + err.message, "error");
+    } finally {
+      updateBtn.disabled = false;
+      updateBtn.textContent = "Update Profile";
+    }
+  });
+
+  // Update password
+  const passBtn = document.getElementById("updatePasswordBtn");
+  const passInput = document.getElementById("newPassword");
+
+  passBtn.addEventListener("click", () => {
+    const newPass = passInput.value.trim();
+    passBtn.disabled = true;
+    passBtn.textContent = "Updating...";
+
+    if (newPass.length < 6) {
+      showToast("Password must be at least 6 characters.", "error");
+      passBtn.disabled = false;
+      passBtn.textContent = "Update Password";
+      return;
     }
 
-    // Update profile
-    const updateBtn = document.getElementById("updateProfileBtn");
-    const profileMsg = document.getElementById("profileMsg");
-
-    updateBtn.addEventListener("click", async () => {
-      const name = nameInput.value.trim();
-      const role = roleInput.value.trim();
-      const phone = phoneInput.value.trim();
-      const address = addressInput.value.trim();
-
-      profileMsg.textContent = "";
-      updateBtn.disabled = true;
-      updateBtn.textContent = "Updating...";
-
-      try {
-        await updateProfile(user, { displayName: name });
-        await updateDoc(userRef, { name, role, phone, address });
-        profileMsg.textContent = "Profile updated successfully.";
-        profileMsg.className = "message success";
-      } catch (err) {
-        profileMsg.textContent = "Error: " + err.message;
-        profileMsg.className = "message error";
-      } finally {
-        updateBtn.disabled = false;
-        updateBtn.textContent = "Update Profile";
-      }
-    });
-
-    // Update password
-    const passBtn = document.getElementById("updatePasswordBtn");
-    const passInput = document.getElementById("newPassword");
-    const passwordMsg = document.getElementById("passwordMsg");
-
-    passBtn.addEventListener("click", () => {
-      const newPass = passInput.value.trim();
-      passwordMsg.textContent = "";
-      passBtn.disabled = true;
-      passBtn.textContent = "Updating...";
-
-      if (newPass.length < 6) {
-        passwordMsg.textContent = "Password must be at least 6 characters.";
-        passwordMsg.className = "message error";
+    updatePassword(user, newPass)
+      .then(() => showToast("Password updated successfully.", "success"))
+      .catch(err => showToast("Error: " + err.message, "error"))
+      .finally(() => {
         passBtn.disabled = false;
         passBtn.textContent = "Update Password";
-        return;
-      }
+      });
+  });
+}
 
-      updatePassword(user, newPass)
-        .then(() => {
-          passwordMsg.textContent = "Password updated successfully.";
-          passwordMsg.className = "message success";
-        })
-        .catch(err => {
-          passwordMsg.textContent = "Error: " + err.message;
-          passwordMsg.className = "message error";
-        })
-        .finally(() => {
-          passBtn.disabled = false;
-          passBtn.textContent = "Update Password";
-        });
-    });
-  }
-
-  // Theme toggle logic
+// Theme toggle logic
 const themeToggleBtn = document.getElementById("themeToggleBtn");
 if (themeToggleBtn) {
   if (localStorage.getItem("theme") === "light") {
@@ -291,6 +289,7 @@ function showToast(message, type = "success") {
 }
 
 // Add Project Modal Logic
+const addProjectBtn = document.getElementById("addProjectBtn");
 if (addProjectBtn) {
   addProjectBtn.addEventListener("click", () => {
     const modal = document.createElement("div");
@@ -327,8 +326,10 @@ if (addProjectBtn) {
     `;
     document.body.appendChild(modal);
 
+    // Cancel button closes modal
     document.getElementById("cancelProjectBtn").onclick = () => modal.remove();
 
+    // Save button logic
     document.getElementById("saveProjectBtn").onclick = async () => {
       const name = document.getElementById("newProjectName").value.trim();
       const lead = document.getElementById("newProjectLead").value.trim();
@@ -337,6 +338,7 @@ if (addProjectBtn) {
       const status = document.getElementById("newProjectStatus").value;
       const completion = parseInt(document.getElementById("newProjectCompletion").value, 10);
 
+      // Validation
       if (!name || !lead || !start || !end || isNaN(completion)) {
         showToast("All fields are required.", "error");
         return;
@@ -350,6 +352,7 @@ if (addProjectBtn) {
         return;
       }
 
+      // Firestore write
       try {
         await addDoc(collection(db, "projects"), {
           name,
@@ -362,7 +365,7 @@ if (addProjectBtn) {
         });
         showToast("Project added successfully.", "success");
         setTimeout(() => modal.remove(), 1000);
-        loadProjects();
+        loadProjects(); // Refresh table
       } catch (err) {
         showToast("Error: " + err.message, "error");
       }
