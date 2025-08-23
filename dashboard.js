@@ -5,7 +5,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, updateDoc,
-  collection, getDocs, query, where, orderBy, Timestamp
+  collection, getDocs, query, orderBy
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,57 +16,26 @@ document.addEventListener("DOMContentLoaded", () => {
     storageBucket: "kr-infra-auth.appspot.com",
     messagingSenderId: "263430872882",
     appId: "1:263430872882:web:8b49bec1caaf854474412b",
-    measurementId: "G-3VVNLN7QJL"
+    measurementId: "G-3VVNL7QJL"
   };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = "login.html";
-      return;
-    }
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return window.location.href = "login.html";
 
-    // Populate header greeting
     const userHeaderName = document.getElementById("userName");
-    if (userHeaderName) userHeaderName.textContent = user.displayName ? `Hi, ${user.displayName}` : "Hello";
+    if (userHeaderName) userHeaderName.textContent = user.displayName ? `Hi, ${user.displayName}` : "Hi";
 
     const tabs = {
       overviewTab: `
         <section class="dashboard-grid">
-          <div class="dashboard-card">
-            <h3>Active Projects</h3>
-            <p id="activeCount">Loading...</p>
-          </div>
-          <div class="dashboard-card">
-            <h3>Near Deadline</h3>
-            <p id="nearDeadlineCount">Loading...</p>
-          </div>
-          <div class="dashboard-card">
-            <h3>Completed Projects</h3>
-            <p id="completedCount">Loading...</p>
-          </div>
+          <div class="dashboard-card"><h3>Active Projects</h3><p id="activeCount">0</p></div>
+          <div class="dashboard-card"><h3>Near Deadline</h3><p id="nearDeadlineCount">0</p></div>
+          <div class="dashboard-card"><h3>Completed Projects</h3><p id="completedCount">0</p></div>
         </section>
-      `,
-      projectsTab: `
-        <div class="dashboard-panel">
-          <h2>Projects</h2>
-          <table class="project-table" style="width:100%; border-collapse: collapse;">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Completion</th>
-                <th>Lead</th>
-              </tr>
-            </thead>
-            <tbody id="projectsTableBody"></tbody>
-          </table>
-        </div>
       `,
       scheduleTab: `
         <div class="dashboard-panel">
@@ -74,48 +43,51 @@ document.addEventListener("DOMContentLoaded", () => {
           <ul id="scheduleList"></ul>
         </div>
       `,
+      projectsTab: `
+        <div class="dashboard-panel">
+          <h2>Projects</h2>
+          <table class="project-table">
+            <thead>
+              <tr><th>Name</th><th>Status</th><th>Start</th><th>End</th><th>Completion</th><th>Lead</th></tr>
+            </thead>
+            <tbody id="projectsTableBody"></tbody>
+          </table>
+        </div>
+      `,
       profileTab: `
         <h2>Profile</h2>
         <div class="profile-card">
           <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
-
           <label for="displayName">Display Name</label>
-          <input type="text" id="displayName" placeholder="Enter your name" />
-
+          <input type="text" id="displayName" />
           <label for="userRole">Role</label>
-          <input type="text" id="userRole" placeholder="Enter your role" />
-
+          <input type="text" id="userRole" />
           <label for="userPhone">Phone</label>
-          <input type="text" id="userPhone" placeholder="Enter your phone number" />
-
+          <input type="text" id="userPhone" />
           <label for="userAddress">Address</label>
-          <input type="text" id="userAddress" placeholder="Enter your address" />
-
+          <input type="text" id="userAddress" />
           <button id="updateProfileBtn">Update Profile</button>
           <div id="profileMsg" class="message"></div>
-
           <hr />
-
           <label for="newPassword">New Password</label>
-          <input type="password" id="newPassword" placeholder="Enter new password" />
+          <input type="password" id="newPassword" />
           <button id="updatePasswordBtn">Update Password</button>
           <div id="passwordMsg" class="message"></div>
         </div>
       `
     };
 
-    // Tab click handling
-    ["overviewTab", "projectsTab", "scheduleTab", "profileTab"].forEach(id => {
+    // Tab switching
+    ["overviewTab", "scheduleTab", "projectsTab", "profileTab"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener("click", () => {
           document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
           el.classList.add("active");
           document.getElementById("dashboardContent").innerHTML = tabs[id] || "";
-
           if (id === "overviewTab") loadOverview();
-          if (id === "projectsTab") loadProjects();
           if (id === "scheduleTab") loadSchedule();
+          if (id === "projectsTab") loadProjects();
           if (id === "profileTab") renderProfileTab(user);
         });
       }
@@ -126,28 +98,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Logout
     const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        signOut(auth).then(() => window.location.href = "login.html");
-      });
-    }
+    if (logoutBtn) logoutBtn.addEventListener("click", () => signOut(auth).then(() => window.location.href = "login.html"));
   });
 
-  // Load Overview counts
+  // Overview logic
   async function loadOverview() {
-    const projectsRef = collection(db, "projects");
-    const snapshot = await getDocs(projectsRef);
-    const now = new Date();
+    const snapshot = await getDocs(collection(db, "projects"));
     let active = 0, nearDeadline = 0, completed = 0;
+    const now = new Date();
 
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
+    snapshot.forEach(doc => {
+      const data = doc.data();
       if (data.status === "ongoing") active++;
       if (data.status === "completed") completed++;
       if (data.endDate && data.status === "ongoing") {
         const end = data.endDate.toDate();
-        const diffDays = (end - now) / (1000 * 60 * 60 * 24);
-        if (diffDays <= 7 && diffDays >= 0) nearDeadline++;
+        const diff = (end - now) / (1000 * 60 * 60 * 24);
+        if (diff <= 7 && diff >= 0) nearDeadline++;
       }
     });
 
@@ -156,19 +123,19 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("completedCount").textContent = completed;
   }
 
-  // Load Projects list
+  // Projects logic
   async function loadProjects() {
     const tbody = document.getElementById("projectsTableBody");
     const snapshot = await getDocs(collection(db, "projects"));
     tbody.innerHTML = "";
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
+    snapshot.forEach(doc => {
+      const data = doc.data();
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${data.name}</td>
-        <td>${data.status}</td>
-        <td>${data.startDate ? data.startDate.toDate().toLocaleDateString() : ""}</td>
-        <td>${data.endDate ? data.endDate.toDate().toLocaleDateString() : ""}</td>
+        <td><span class="status-badge status-${data.status}">${data.status}</span></td>
+        <td>${data.startDate?.toDate().toLocaleDateString()}</td>
+        <td>${data.endDate?.toDate().toLocaleDateString()}</td>
         <td>${data.completion || 0}%</td>
         <td>${data.lead || ""}</td>
       `;
@@ -176,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Load Schedule list
+  // Schedule logic
   async function loadSchedule() {
     const list = document.getElementById("scheduleList");
     const scheduleSnap = await getDocs(query(collection(db, "schedule"), orderBy("date")));
@@ -189,12 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (projDoc.exists()) projectName = projDoc.data().name;
       }
       const li = document.createElement("li");
-      li.textContent = `${data.title} (${projectName}) - ${data.date.toDate().toLocaleDateString()}`;
+      li.textContent = `${data.title} (${projectName}) – ${data.date.toDate().toLocaleDateString()}`;
       list.appendChild(li);
     }
   }
 
-  // Profile tab logic
+    // Profile logic
   async function renderProfileTab(user) {
     const uid = user.uid;
     const userRef = doc(db, "users", uid);
@@ -215,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
       addressInput.value = data.address || "";
     }
 
-        // Update profile
+    // Update profile
     const updateBtn = document.getElementById("updateProfileBtn");
     const profileMsg = document.getElementById("profileMsg");
 
@@ -228,14 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
       profileMsg.textContent = "";
       updateBtn.disabled = true;
       updateBtn.textContent = "Updating...";
-
-      if (!name) {
-        profileMsg.textContent = "Display name cannot be empty.";
-        profileMsg.className = "message error";
-        updateBtn.disabled = false;
-        updateBtn.textContent = "Update Profile";
-        return;
-      }
 
       try {
         await updateProfile(user, { displayName: name });
@@ -284,20 +243,23 @@ document.addEventListener("DOMContentLoaded", () => {
           passBtn.textContent = "Update Password";
         });
     });
-  } // end of renderProfileTab
+  }
+
   // Theme toggle logic
-const themeToggleBtn = document.getElementById("themeToggleBtn");
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  if (themeToggleBtn) {
+    if (localStorage.getItem("theme") === "light") {
+      document.body.classList.add("light-mode");
+      themeToggleBtn.textContent = "☀️";
+    } else {
+      themeToggleBtn.textContent = "🌙";
+    }
 
-// Load saved theme from localStorage
-if (localStorage.getItem("theme") === "light") {
-  document.body.classList.add("light-mode");
-  themeToggleBtn.textContent = "☀️";
-}
-
-themeToggleBtn.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
-  const isLight = document.body.classList.contains("light-mode");
-  themeToggleBtn.textContent = isLight ? "☀️" : "🌙";
-  localStorage.setItem("theme", isLight ? "light" : "dark");
+    themeToggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+      const isLight = document.body.classList.contains("light-mode");
+      themeToggleBtn.textContent = isLight ? "☀️" : "🌙";
+      localStorage.setItem("theme", isLight ? "light" : "dark");
+    });
+  }
 });
-}); // end of DOMContentLoaded

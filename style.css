@@ -305,23 +305,26 @@ footer {
   color: #000;
   font-weight: 600;
 }
-.logout-btn { background-color: #d32f2f; color: #fff; }
+.logout-btn {
+  background-color: #d32f2f;
+  color: #fff;
+}
 
 /* ===================== */
 /* 🌟 Dashboard Content Area */
 /* ===================== */
 #dashboardContent {
-  padding: 20px;
-  padding-top: 96px; /* header height + spacing */
+  padding: 96px 20px 20px; /* 64px header + 32px gap */
   background-color: #f9f9f9;
   color: #111;
   border-radius: 24px;
-  min-height: 240px;
-  height: calc(100vh - 200px);
+  min-height: calc(100vh - 200px);
   overflow-y: auto;
 }
 
+/* ===================== */
 /* Panels & Cards */
+/* ===================== */
 .dashboard-panel {
   background: #fff;
   color: #111;
@@ -347,8 +350,15 @@ footer {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.dashboard-card h3 { font-size: 1rem; color: #666; margin-bottom: 8px; }
-.dashboard-card p { font-size: 1.8rem; font-weight: bold; }
+.dashboard-card h3 {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+.dashboard-card p {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
 .dashboard-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
@@ -357,8 +367,12 @@ footer {
 /* ===================== */
 /* 📊 Project Table Styling */
 /* ===================== */
-.project-table { width: 100%; border-collapse: collapse; }
-.project-table th, .project-table td {
+.project-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.project-table th,
+.project-table td {
   border: 1px solid #ddd;
   padding: 8px;
 }
@@ -367,22 +381,35 @@ footer {
   color: #333;
   font-weight: 600;
 }
-.project-table tr:nth-child(even) { background: #f9f9f9; }
-.project-table tr:hover { background: #f1f1f1; }
+.project-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+.project-table tr:hover {
+  background: #f1f1f1;
+}
 .status-badge {
   padding: 4px 8px;
   border-radius: 4px;
   color: #fff;
   font-size: 0.85rem;
 }
-.status-ongoing { background-color: #ff9800; }
-.status-completed { background-color: #4caf50; }
-.status-onhold { background-color: #9e9e9e; }
+.status-ongoing {
+  background-color: #ff9800;
+}
+.status-completed {
+  background-color: #4caf50;
+}
+.status-onhold {
+  background-color: #9e9e9e;
+}
 
 /* ===================== */
 /* 📅 Schedule List Styling */
 /* ===================== */
-#scheduleList { list-style: none; padding: 0; }
+#scheduleList {
+  list-style: none;
+  padding: 0;
+}
 #scheduleList li {
   display: flex;
   justify-content: space-between;
@@ -410,8 +437,7 @@ footer {
 .profile-card input {
   width: 100%;
   padding: 12px;
-  margin-top: 8px;
-  margin-bottom: 16px;
+  margin: 8px 0 16px;
   background: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -446,12 +472,12 @@ footer {
 }
 
 /* ===================== */
-/* 📌 Sticky Header + Badges (Upgraded) */
+/* 📌 Sticky Header + Badges */
 /* ===================== */
 .dash-header {
   position: fixed;
   top: 0;
-  left: 240px; /* match sidebar width */
+  left: 240px;
   right: 0;
   height: 64px;
   background: #1f1f1f;
@@ -462,20 +488,11 @@ footer {
   z-index: 100;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
-
-/* Ensure content starts below header */
-#dashboardContent {
-  padding-top: 96px; /* 64px header + 32px breathing space */
-}
-
-/* Header actions (right side) */
 .header-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
-/* Notification icon */
 .notif-btn {
   position: relative;
   cursor: pointer;
@@ -486,8 +503,6 @@ footer {
 .notif-btn:hover {
   transform: scale(1.1);
 }
-
-/* Notification badge */
 .badge {
   position: absolute;
   top: -4px;
@@ -499,17 +514,6 @@ footer {
   border-radius: 50%;
   font-weight: bold;
 }
-
-/* Avatar styling */
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  margin-right: 0.5rem;
-  object-fit: cover;
-  border: 2px solid #ffca28;
-}
-
 /* Sidebar collapsed state affects header offset */
 .sidebar.collapsed ~ .dash-header {
   left: 60px;
@@ -522,9 +526,6 @@ footer {
   width: 60px;
 }
 .sidebar.collapsed .nav-item span {
-  display: none;
-}
-.sidebar.collapsed .brand h3 {
   display: none;
 }
 
@@ -549,7 +550,7 @@ footer {
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50%      { opacity: 0.4; }
 }
 
 /* ===================== */
@@ -629,9 +630,7 @@ body.light-mode #themeToggleBtn {
 }
 
 /* Smooth transitions for theme switch */
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+body,
 #dashboardContent,
 .dashboard-panel,
 .dashboard-card,
