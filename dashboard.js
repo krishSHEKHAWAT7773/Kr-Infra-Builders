@@ -8,6 +8,8 @@ import {
   collection, getDocs, query, orderBy
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+import { addDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const firebaseConfig = {
     apiKey: "AIzaSyC2jY47xWVne8Dy4X83Z6szWY3_t6fZfRM",
@@ -262,4 +264,55 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("theme", isLight ? "light" : "dark");
     });
   }
+
+  document.getElementById("addProjectBtn").addEventListener("click", () => {
+  const modal = document.createElement("div");
+  modal.className = "modal-overlay";
+  modal.innerHTML = `
+    <div class="modal">
+      <h2>Add New Project</h2>
+      <input type="text" id="newProjectName" placeholder="Project Name" />
+      <input type="text" id="newProjectLead" placeholder="Project Lead" />
+      <input type="date" id="newProjectStart" />
+      <input type="date" id="newProjectEnd" />
+      <button id="saveProjectBtn">Save</button>
+      <button id="cancelProjectBtn">Cancel</button>
+      <div id="projectMsg" class="message"></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  document.getElementById("cancelProjectBtn").onclick = () => modal.remove();
+
+  document.getElementById("saveProjectBtn").onclick = async () => {
+    const name = document.getElementById("newProjectName").value.trim();
+    const lead = document.getElementById("newProjectLead").value.trim();
+    const start = document.getElementById("newProjectStart").value;
+    const end = document.getElementById("newProjectEnd").value;
+    const msg = document.getElementById("projectMsg");
+
+    if (!name || !lead || !start || !end) {
+      msg.textContent = "All fields are required.";
+      msg.className = "message error";
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "projects"), {
+        name,
+        lead,
+        startDate: new Date(start),
+        endDate: new Date(end),
+        status: "ongoing",
+        completion: 0
+      });
+      msg.textContent = "Project added successfully.";
+      msg.className = "message success";
+      setTimeout(() => modal.remove(), 1000);
+    } catch (err) {
+      msg.textContent = "Error: " + err.message;
+      msg.className = "message error";
+    }
+  };
+});
 });
