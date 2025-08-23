@@ -706,3 +706,18 @@ body,
   background: #d32f2f;
   color: #fff;
 }
+
+.modal label {
+  display: block;
+  margin-top: 8px;
+  font-weight: 500;
+  color: #333;
+}
+.modal select,
+.modal input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}

@@ -279,52 +279,73 @@ document.addEventListener("DOMContentLoaded", () => {
       const modal = document.createElement("div");
       modal.className = "modal-overlay";
       modal.innerHTML = `
-        <div class="modal">
-          <h2>Add New Project</h2>
-          <input type="text" id="newProjectName" placeholder="Project Name" />
-          <input type="text" id="newProjectLead" placeholder="Project Lead" />
-          <input type="date" id="newProjectStart" />
-          <input type="date" id="newProjectEnd" />
-          <button id="saveProjectBtn">Save</button>
-          <button id="cancelProjectBtn">Cancel</button>
-          <div id="projectMsg" class="message"></div>
-        </div>
-      `;
+  <div class="modal">
+    <h2>Add New Project</h2>
+
+    <label for="newProjectName">Project Name</label>
+    <input type="text" id="newProjectName" placeholder="Enter project name" />
+
+    <label for="newProjectLead">Project Lead</label>
+    <input type="text" id="newProjectLead" placeholder="Enter project lead" />
+
+    <label for="newProjectStart">Start Date</label>
+    <input type="date" id="newProjectStart" />
+
+    <label for="newProjectEnd">End Date</label>
+    <input type="date" id="newProjectEnd" />
+
+    <label for="newProjectStatus">Status</label>
+    <select id="newProjectStatus">
+      <option value="ongoing">Ongoing</option>
+      <option value="completed">Completed</option>
+      <option value="onhold">On Hold</option>
+    </select>
+
+    <label for="newProjectCompletion">Completion (%)</label>
+    <input type="number" id="newProjectCompletion" min="0" max="100" value="0" />
+
+    <button id="saveProjectBtn">Save</button>
+    <button id="cancelProjectBtn">Cancel</button>
+    <div id="projectMsg" class="message"></div>
+  </div>
+`;
       document.body.appendChild(modal);
 
       document.getElementById("cancelProjectBtn").onclick = () => modal.remove();
 
       document.getElementById("saveProjectBtn").onclick = async () => {
-        const name = document.getElementById("newProjectName").value.trim();
-        const lead = document.getElementById("newProjectLead").value.trim();
-        const start = document.getElementById("newProjectStart").value;
-        const end = document.getElementById("newProjectEnd").value;
-        const msg = document.getElementById("projectMsg");
+  const name = document.getElementById("newProjectName").value.trim();
+  const lead = document.getElementById("newProjectLead").value.trim();
+  const start = document.getElementById("newProjectStart").value;
+  const end = document.getElementById("newProjectEnd").value;
+  const status = document.getElementById("newProjectStatus").value;
+  const completion = parseInt(document.getElementById("newProjectCompletion").value, 10);
+  const msg = document.getElementById("projectMsg");
 
-        if (!name || !lead || !start || !end) {
-          msg.textContent = "All fields are required.";
-          msg.className = "message error";
-          return;
-        }
+  if (!name || !lead || !start || !end || isNaN(completion)) {
+    msg.textContent = "All fields are required.";
+    msg.className = "message error";
+    return;
+  }
 
-        try {
-          await addDoc(collection(db, "projects"), {
-            name,
-            lead,
-            startDate: new Date(start),
-            endDate: new Date(end),
-            status: "ongoing",
-            completion: 0
-          });
-          msg.textContent = "Project added successfully.";
-          msg.className = "message success";
-          setTimeout(() => modal.remove(), 1000);
-          loadProjects(); // refresh table
-        } catch (err) {
-          msg.textContent = "Error: " + err.message;
-          msg.className = "message error";
-        }
-      };
+  try {
+    await addDoc(collection(db, "projects"), {
+      name,
+      lead,
+      startDate: new Date(start),
+      endDate: new Date(end),
+      status,
+      completion
+    });
+    msg.textContent = "Project added successfully.";
+    msg.className = "message success";
+    setTimeout(() => modal.remove(), 1000);
+    loadProjects();
+  } catch (err) {
+    msg.textContent = "Error: " + err.message;
+    msg.className = "message error";
+  }
+};
     });
   }
 
