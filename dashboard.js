@@ -256,98 +256,116 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Theme toggle logic
-  const themeToggleBtn = document.getElementById("themeToggleBtn");
-  if (themeToggleBtn) {
-    if (localStorage.getItem("theme") === "light") {
-      document.body.classList.add("light-mode");
-      themeToggleBtn.textContent = "☀️";
-    } else {
-      themeToggleBtn.textContent = "🌙";
-    }
-
-    themeToggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
-      const isLight = document.body.classList.contains("light-mode");
-      themeToggleBtn.textContent = isLight ? "☀️" : "🌙";
-      localStorage.setItem("theme", isLight ? "light" : "dark");
-    });
+const themeToggleBtn = document.getElementById("themeToggleBtn");
+if (themeToggleBtn) {
+  if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light-mode");
+    themeToggleBtn.textContent = "☀️";
+  } else {
+    themeToggleBtn.textContent = "🌙";
   }
 
-  // Add Project Modal Logic
-  if (addProjectBtn) {
-    addProjectBtn.addEventListener("click", () => {
-      const modal = document.createElement("div");
-      modal.className = "modal-overlay";
-      modal.innerHTML = `
-  <div class="modal">
-    <h2>Add New Project</h2>
+  themeToggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+    const isLight = document.body.classList.contains("light-mode");
+    themeToggleBtn.textContent = isLight ? "☀️" : "🌙";
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+  });
+}
 
-    <label for="newProjectName">Project Name</label>
-    <input type="text" id="newProjectName" placeholder="Enter project name" />
+// Toast logic
+function showToast(message, type = "success") {
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
 
-    <label for="newProjectLead">Project Lead</label>
-    <input type="text" id="newProjectLead" placeholder="Enter project lead" />
-
-    <label for="newProjectStart">Start Date</label>
-    <input type="date" id="newProjectStart" />
-
-    <label for="newProjectEnd">End Date</label>
-    <input type="date" id="newProjectEnd" />
-
-    <label for="newProjectStatus">Status</label>
-    <select id="newProjectStatus">
-      <option value="ongoing">Ongoing</option>
-      <option value="completed">Completed</option>
-      <option value="onhold">On Hold</option>
-    </select>
-
-    <label for="newProjectCompletion">Completion (%)</label>
-    <input type="number" id="newProjectCompletion" min="0" max="100" value="0" />
-
-    <button id="saveProjectBtn">Save</button>
-    <button id="cancelProjectBtn">Cancel</button>
-    <div id="projectMsg" class="message"></div>
-  </div>
-`;
-      document.body.appendChild(modal);
-
-      document.getElementById("cancelProjectBtn").onclick = () => modal.remove();
-
-      document.getElementById("saveProjectBtn").onclick = async () => {
-  const name = document.getElementById("newProjectName").value.trim();
-  const lead = document.getElementById("newProjectLead").value.trim();
-  const start = document.getElementById("newProjectStart").value;
-  const end = document.getElementById("newProjectEnd").value;
-  const status = document.getElementById("newProjectStatus").value;
-  const completion = parseInt(document.getElementById("newProjectCompletion").value, 10);
-  const msg = document.getElementById("projectMsg");
-
-  if (!name || !lead || !start || !end || isNaN(completion)) {
-    msg.textContent = "All fields are required.";
-    msg.className = "message error";
-    return;
+  const container = document.getElementById("toastContainer");
+  if (container.children.length >= 3) {
+    container.removeChild(container.firstChild);
   }
+  container.appendChild(toast);
 
-  try {
-    await addDoc(collection(db, "projects"), {
-      name,
-      lead,
-      startDate: new Date(start),
-      endDate: new Date(end),
-      status,
-      completion,
-      ownerUID: auth.currentUser.uid // ✅ This matches your Firestore rule
-    });
-    msg.textContent = "Project added successfully.";
-    msg.className = "message success";
-    setTimeout(() => modal.remove(), 1000);
-    loadProjects();
-  } catch (err) {
-    msg.textContent = "Error: " + err.message;
-    msg.className = "message error";
-  }
-};
-    });
-  }
+  setTimeout(() => {
+    toast.remove();
+  }, 3500);
+}
 
-});
+// Add Project Modal Logic
+if (addProjectBtn) {
+  addProjectBtn.addEventListener("click", () => {
+    const modal = document.createElement("div");
+    modal.className = "modal-overlay";
+    modal.innerHTML = `
+      <div class="modal">
+        <h2>Add New Project</h2>
+
+        <label for="newProjectName">Project Name</label>
+        <input type="text" id="newProjectName" placeholder="Enter project name" />
+
+        <label for="newProjectLead">Project Lead</label>
+        <input type="text" id="newProjectLead" placeholder="Enter project lead" />
+
+        <label for="newProjectStart">Start Date</label>
+        <input type="date" id="newProjectStart" />
+
+        <label for="newProjectEnd">End Date</label>
+        <input type="date" id="newProjectEnd" />
+
+        <label for="newProjectStatus">Status</label>
+        <select id="newProjectStatus">
+          <option value="ongoing">Ongoing</option>
+          <option value="completed">Completed</option>
+          <option value="onhold">On Hold</option>
+        </select>
+
+        <label for="newProjectCompletion">Completion (%)</label>
+        <input type="number" id="newProjectCompletion" min="0" max="100" value="0" />
+
+        <button id="saveProjectBtn">Save</button>
+        <button id="cancelProjectBtn">Cancel</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById("cancelProjectBtn").onclick = () => modal.remove();
+
+    document.getElementById("saveProjectBtn").onclick = async () => {
+      const name = document.getElementById("newProjectName").value.trim();
+      const lead = document.getElementById("newProjectLead").value.trim();
+      const start = document.getElementById("newProjectStart").value;
+      const end = document.getElementById("newProjectEnd").value;
+      const status = document.getElementById("newProjectStatus").value;
+      const completion = parseInt(document.getElementById("newProjectCompletion").value, 10);
+
+      if (!name || !lead || !start || !end || isNaN(completion)) {
+        showToast("All fields are required.", "error");
+        return;
+      }
+      if (completion < 0 || completion > 100) {
+        showToast("Completion must be between 0 and 100.", "error");
+        return;
+      }
+      if (new Date(end) < new Date(start)) {
+        showToast("End date cannot be before start date.", "error");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "projects"), {
+          name,
+          lead,
+          startDate: new Date(start),
+          endDate: new Date(end),
+          status,
+          completion,
+          ownerUID: auth.currentUser.uid
+        });
+        showToast("Project added successfully.", "success");
+        setTimeout(() => modal.remove(), 1000);
+        loadProjects();
+      } catch (err) {
+        showToast("Error: " + err.message, "error");
+      }
+    };
+  });
+}
