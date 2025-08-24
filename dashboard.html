@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard | KR Infra Builders</title>
+  <link rel="stylesheet" href="globals.css" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
@@ -43,15 +44,13 @@
 
   </div>
 
-  <!-- ✅ Floating Add Project Button -->
-  <button id="addProjectBtn" title="Add Project">
-    <i class="fas fa-plus"></i>
-  </button>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js"></script>
 
-  <!-- ✅ Toast Container -->
-  <div id="toastContainer"></div>
-
-  <!-- ✅ Dashboard Logic (ES Module) -->
+  <!-- Dashboard Logic -->
   <script type="module" src="dashboard.js"></script>
 </body>
 </html>

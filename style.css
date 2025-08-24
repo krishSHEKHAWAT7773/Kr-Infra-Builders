@@ -514,6 +514,7 @@ footer {
   border-radius: 50%;
   font-weight: bold;
 }
+/* Sidebar collapsed state affects header offset */
 .sidebar.collapsed ~ .dash-header {
   left: 60px;
 }
@@ -553,27 +554,19 @@ footer {
 }
 
 /* ===================== */
-/* ➕ Floating Add Button */
+/* ➕ Utility Buttons */
 /* ===================== */
 #addProjectBtn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
   background: #ffca28;
-  color: #000;
+  padding: 8px 12px;
   border: none;
-  border-radius: 50%;
-  width: 56px;
-  height: 56px;
-  font-size: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
-  z-index: 200;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: background 0.3s ease;
 }
 #addProjectBtn:hover {
   background: #ffc107;
-  transform: scale(1.1);
 }
 
 /* ===================== */
@@ -617,12 +610,6 @@ body.light-mode .profile-card button {
   background: linear-gradient(to right, #ffca28, #ffc107);
   color: #000;
 }
-body.light-mode .toast.success {
-  background: #388e3c;
-}
-body.light-mode .toast.error {
-  background: #c62828;
-}
 
 /* ===================== */
 /* 🌙 Theme Toggle Button */
@@ -649,136 +636,4 @@ body,
 .dashboard-card,
 .profile-card {
   transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* ===================== */
-/* 🧩 Modal Styles */
-/* ===================== */
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 300;
-}
-.modal {
-  background: #fff;
-  padding: 24px;
-  border-radius: 12px;
-  width: 320px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-}
-.modal h2 {
-  margin-bottom: 16px;
-  color: #ff9800;
-}
-.modal input,
-.modal select,
-.modal input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-.modal label {
-  display: block;
-  margin-top: 8px;
-  font-weight: 500;
-  color: #333;
-}
-.modal button {
-  padding: 10px 16px;
-  margin-right: 8px;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-}
-#saveProjectBtn {
-  background: #4caf50;
-  color: #fff;
-}
-#cancelProjectBtn {
-  background: #d32f2f;
-  color: #fff;
-}
-
-/* Responsive modal */
-@media (max-width: 480px) {
-  .modal {
-    width: 90%;
-    padding: 16px;
-  }
-}
-
-/* ===================== */
-/* ✅ Toast Notifications */
-/* ===================== */
-#toastContainer {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.toast {
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  animation: slideIn 0.3s ease, fadeOut 0.3s ease 3s forwards;
-}
-.toast.success {
-  background: #4caf50;
-}
-.toast.error {
-  background: #f44336;
-}
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(100px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes fadeOut {
-  to { opacity: 0; transform: translateX(100px); }
-}
-
-/* ===================== */
-/* 📣 Message Feedback */
-/* ===================== */
-.message {
-  margin-top: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  padding: 10px 12px;
-  border-radius: 8px;
-}
-
-.message.success {
-  color: #1b5e20;
-  background: #e8f5e9;
-  border: 1px solid #a5d6a7;
-}
-
-.message.error {
-  color: #b71c1c;
-  background: #ffebee;
-  border: 1px solid #ef9a9a;
-}
-
-/* Optional: Light mode overrides for better contrast */
-body.light-mode .message.success {
-  background: #dcedc8;
-  color: #2e7d32;
-}
-
-body.light-mode .message.error {
-  background: #ffcdd2;
-  color: #c62828;
 }
