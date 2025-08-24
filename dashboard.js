@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let projects = [];
   let userProfile = {};
   let notifs = [];
+  let events = []; // New variable for events
 
   const navTabs = {
     overviewTab: () => renderOverview(),
@@ -55,6 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const projectsSnapshot = await getDocs(collection(db, "projects"));
       projects = projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      
+      const eventsSnapshot = await getDocs(collection(db, "events"));
+      events = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
       const userDocRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
@@ -69,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
           role: "user",
           phone: "",
           address: "",
-          profileImage: ""
         };
         await setDoc(userDocRef, userProfile);
       }
@@ -138,11 +141,66 @@ document.addEventListener("DOMContentLoaded", () => {
     dashboardContent.innerHTML = `
       <section class="dashboard-panel">
         <h2 class="panel-title">Upcoming Schedule</h2>
-        <div class="list-container">
-          <p>Schedule view coming soon. Here you would integrate a calendar library like FullCalendar.</p>
+        <button id="addEventBtn" class="primary-btn">Add New Event</button>
+        <div class="table-container" style="margin-top: 20px;">
+          <table class="project-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody id="eventsTableBody">
+              ${events.length > 0 ? events.map(e => `
+                <tr>
+                  <td>${e.title}</td>
+                  <td>${e.date}</td>
+                  <td>${e.description}</td>
+                </tr>
+              `).join('') : `<tr><td colspan="3" class="no-results">No upcoming events.</td></tr>`}
+            </tbody>
+          </table>
         </div>
       </section>
     `;
+    document.getElementById("addEventBtn").addEventListener("click", () => {
+      document.getElementById("addEventModal").style.display = "flex";
+      // Close modal logic
+      document.querySelector("#addEventModal .close-btn").onclick = () => document.getElementById("addEventModal").style.display = "none";
+      window.onclick = (event) => {
+        if (event.target === document.getElementById("addEventModal")) {
+          document.getElementById("addEventModal").style.display = "none";
+        }
+      };
+    });
+    document.getElementById("addEventForm").addEventListener("submit", addNewEvent);
+  };
+  
+  const addNewEvent = async (e) => {
+    e.preventDefault();
+    const newEvent = {
+      title: document.getElementById("eventTitle").value,
+      date: document.getElementById("eventDate").value,
+      description: document.getElementById("eventDescription").value,
+    };
+    try {
+      await addDoc(collection(db, "events"), newEvent);
+      const addEventMsg = document.getElementById("addEventMsg");
+      addEventMsg.textContent = "Event added successfully!";
+      addEventMsg.className = "message success";
+      // Refresh the event list
+      await fetchData(auth.currentUser);
+      renderSchedule();
+      // Hide the modal after a short delay
+      setTimeout(() => {
+        document.getElementById("addEventModal").style.display = "none";
+      }, 1500);
+    } catch (error) {
+      document.getElementById("addEventMsg").textContent = "Error adding event: " + error.message;
+      document.getElementById("addEventMsg").className = "message error";
+      console.error("Error adding event:", error);
+    }
   };
 
   const renderProjects = (filteredProjects = projects) => {
@@ -302,7 +360,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <p><strong>Role:</strong> <span id="profileRole">${userProfile.role || 'Not set'}</span></p>
           <p><strong>Phone:</strong> <span id="profilePhone">${userProfile.phone || 'Not set'}</span></p>
           <p><strong>Address:</strong> <span id="profileAddress">${userProfile.address || 'Not set'}</span></p>
-          <p><strong>Profile Image:</strong> ${userProfile.profileImage ? `<img src="${userProfile.profileImage}" alt="Profile" class="profile-thumb">` : 'Not set'}</p>
           <button id="editProfileBtn" class="primary-btn">Edit Profile</button>
         </div>
       </section>
@@ -324,7 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeBtn.onclick = () => modal.style.display = "none";
     window.onclick = (event) => {
       if (event.target === modal) modal.style.display = "none";
-    };
+      };
 
     modalForm.onsubmit = async (e) => {
       e.preventDefault();

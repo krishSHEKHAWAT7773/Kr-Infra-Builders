@@ -276,12 +276,12 @@ body.desktop {
   background: #1f1f1f;
   color: #f0f0f0;
   padding: 20px;
-  transition: transform 0.3s, width 0.3s;
+  transition: width 0.3s, padding 0.3s; /* Added padding to transition */
   overflow: hidden;
 }
 .sidebar.collapsed {
   width: 60px;
-  transform: translateX(0);
+  padding: 20px 0; /* Adjusted padding for collapsed state */
 }
 .sidebar .brand {
   font-size: 1.5rem;
@@ -316,7 +316,8 @@ body.desktop {
 }
 .sidebar.collapsed .nav-item span {
   opacity: 0;
-  width: 0;
+  width: 0; /* Hides the text */
+  transition: opacity 0.3s, width 0.3s;
 }
 .dash-header {
   grid-area: header;
@@ -630,15 +631,6 @@ body.desktop {
 /* Add Project button */
 .project-toolbar #addNewProjectBtn {
   margin-left: auto; /* Pushes the button to the right */
-}
-
-.profile-thumb {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #ffca28;
-  margin-top: 10px;
 }
 
 /* ===================== */
