@@ -5,7 +5,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, updateDoc,
-  collection, getDocs, addDoc, setDoc
+  collection, getDocs, query, orderBy,
+  addDoc, deleteDoc, onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -29,11 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
   const themeToggleBtn = document.getElementById("themeToggleBtn");
   const notifBtn = document.getElementById("notifBtn");
-
-  let projects = [];
+  const profileModal = document.getElementById("profileModal");
+  const addProjectModal = document.getElementById("addProjectModal");
+  const editProjectModal = document.getElementById("editProjectModal");
+  const addEventModal = document.getElementById("addEventModal");
+  const editProfileModal = document.getElementById("editProfileModal");
+  
   let userProfile = {};
-  let notifs = [];
-  let events = []; // New variable for events
 
   const navTabs = {
     overviewTab: () => renderOverview(),
@@ -54,21 +57,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const fetchData = async (user) => {
     try {
-      const projectsSnapshot = await getDocs(collection(db, "projects"));
-      projects = projectsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      
-      const eventsSnapshot = await getDocs(collection(db, "events"));
-      events = eventsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
       const userDocRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
         userProfile = userDoc.data();
       } else {
-        // If the user document doesn't exist, create it with default values
         userProfile = {
-          name: user.email.split('@')[0], // Use email as a placeholder name
+          name: user.email.split('@')[0],
           email: user.email,
           role: "user",
           phone: "",
@@ -76,13 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         await setDoc(userDocRef, userProfile);
       }
-
-      // Placeholder for notifications
-      notifs = [
-        { id: 1, message: "Project Alpha is near deadline!" },
-        { id: 2, message: "New task added to Project Beta." }
-      ];
-
       return true;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -90,26 +79,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const renderOverview = () => {
-    const ongoingProjects = projects.filter(p => p.status === "ongoing").length;
-    const completedProjects = projects.filter(p => p.status === "completed").length;
-    const onHoldProjects = projects.filter(p => p.status === "on-hold").length;
-    const nearDeadline = projects.filter(p => {
-      const endDate = new Date(p.endDate);
-      const now = new Date();
-      const diffTime = endDate.getTime() - now.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      return diffDays <= 7 && diffDays >= 0 && p.status === 'ongoing';
-    }).length;
+  const closeModal = (modal) => {
+    modal.style.display = "none";
+  };
 
+  const openModal = (modal) => {
+    modal.style.display = "flex";
+    modal.querySelector(".close-btn").onclick = () => closeModal(modal);
+  };
+  
+  window.onclick = (event) => {
+    if (event.target.classList.contains("modal")) {
+      closeModal(event.target);
+    }
+  };
+
+  const renderOverview = () => {
     dashboardContent.innerHTML = `
       <section class="dashboard-panel">
         <h2 class="panel-title">Project Overview</h2>
         <div class="overview-cards">
-          <div class="dashboard-card"><i class="fas fa-folder-open"></i><h3>Ongoing</h3><p>${ongoingProjects}</p></div>
-          <div class="dashboard-card"><i class="fas fa-check-circle"></i><h3>Completed</h3><p>${completedProjects}</p></div>
-          <div class="dashboard-card"><i class="fas fa-pause-circle"></i><h3>On Hold</h3><p>${onHoldProjects}</p></div>
-          <div class="dashboard-card"><i class="fas fa-exclamation-triangle"></i><h3>Near Deadline</h3><p>${nearDeadline}</p></div>
+          <div class="dashboard-card"><i class="fas fa-folder-open"></i><h3>Ongoing</h3><p id="ongoingCount">0</p></div>
+          <div class="dashboard-card"><i class="fas fa-check-circle"></i><h3>Completed</h3><p id="completedCount">0</p></div>
+          <div class="dashboard-card"><i class="fas fa-pause-circle"></i><h3>On Hold</h3><p id="onHoldCount">0</p></div>
+          <div class="dashboard-card"><i class="fas fa-exclamation-triangle"></i><h3>Near Deadline</h3><p id="nearDeadlineCount">0</p></div>
         </div>
         <div class="chart-container">
           <canvas id="projectStatusChart"></canvas>
@@ -117,23 +110,47 @@ document.addEventListener("DOMContentLoaded", () => {
       </section>
     `;
 
-    const ctx = document.getElementById("projectStatusChart").getContext("2d");
-    new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: ['Ongoing', 'Completed', 'On Hold'],
-        datasets: [{
-          data: [ongoingProjects, completedProjects, onHoldProjects],
-          backgroundColor: ['#28a745', '#007bff', '#ffc107'],
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' },
-          title: { display: true, text: 'Project Status Distribution' }
+    // Real-time listener for Overview
+    onSnapshot(collection(db, "projects"), (snapshot) => {
+      let ongoing = 0, completed = 0, onHold = 0, nearDeadline = 0;
+      const now = new Date();
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.status === "ongoing") ongoing++;
+        if (data.status === "completed") completed++;
+        if (data.status === "on-hold") onHold++;
+        if (data.endDate && data.status === "ongoing") {
+          const end = new Date(data.endDate);
+          const diff = (end - now) / (1000 * 60 * 60 * 24);
+          if (diff <= 7 && diff >= 0) nearDeadline++;
         }
-      },
+      });
+      document.getElementById("ongoingCount").textContent = ongoing;
+      document.getElementById("completedCount").textContent = completed;
+      document.getElementById("onHoldCount").textContent = onHold;
+      document.getElementById("nearDeadlineCount").textContent = nearDeadline;
+
+      const ctx = document.getElementById("projectStatusChart")?.getContext("2d");
+      if (ctx) {
+        new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: ['Ongoing', 'Completed', 'On Hold'],
+            datasets: [{
+              data: [ongoing, completed, onHold],
+              backgroundColor: ['#28a745', '#007bff', '#ffc107'],
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'top' },
+              title: { display: true, text: 'Project Status Distribution' }
+            }
+          },
+        });
+      }
     });
   };
 
@@ -151,34 +168,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 <th>Description</th>
               </tr>
             </thead>
-            <tbody id="eventsTableBody">
-              ${events.length > 0 ? events.map(e => `
-                <tr>
-                  <td>${e.title}</td>
-                  <td>${e.date}</td>
-                  <td>${e.description}</td>
-                </tr>
-              `).join('') : `<tr><td colspan="3" class="no-results">No upcoming events.</td></tr>`}
-            </tbody>
+            <tbody id="eventsTableBody"></tbody>
           </table>
         </div>
       </section>
     `;
-    document.getElementById("addEventBtn").addEventListener("click", () => {
-      document.getElementById("addEventModal").style.display = "flex";
-      // Close modal logic
-      document.querySelector("#addEventModal .close-btn").onclick = () => document.getElementById("addEventModal").style.display = "none";
-      window.onclick = (event) => {
-        if (event.target === document.getElementById("addEventModal")) {
-          document.getElementById("addEventModal").style.display = "none";
-        }
-      };
+    onSnapshot(collection(db, "events"), (snapshot) => {
+      const events = snapshot.docs.map(doc => doc.data());
+      const eventsTableBody = document.getElementById("eventsTableBody");
+      eventsTableBody.innerHTML = events.length > 0 ? events.map(e => `
+        <tr>
+          <td>${e.title}</td>
+          <td>${e.date}</td>
+          <td>${e.description}</td>
+        </tr>
+      `).join('') : `<tr><td colspan="3" class="no-results">No upcoming events.</td></tr>`;
     });
+
+    document.getElementById("addEventBtn").addEventListener("click", () => openModal(addEventModal));
     document.getElementById("addEventForm").addEventListener("submit", addNewEvent);
   };
   
   const addNewEvent = async (e) => {
     e.preventDefault();
+    const addEventMsg = document.getElementById("addEventMsg");
     const newEvent = {
       title: document.getElementById("eventTitle").value,
       date: document.getElementById("eventDate").value,
@@ -186,26 +199,16 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     try {
       await addDoc(collection(db, "events"), newEvent);
-      const addEventMsg = document.getElementById("addEventMsg");
       addEventMsg.textContent = "Event added successfully!";
       addEventMsg.className = "message success";
-      // Refresh the event list
-      await fetchData(auth.currentUser);
-      renderSchedule();
-      // Hide the modal after a short delay
-      setTimeout(() => {
-        document.getElementById("addEventModal").style.display = "none";
-      }, 1500);
+      setTimeout(() => closeModal(addEventModal), 1500);
     } catch (error) {
-      document.getElementById("addEventMsg").textContent = "Error adding event: " + error.message;
-      document.getElementById("addEventMsg").className = "message error";
-      console.error("Error adding event:", error);
+      addEventMsg.textContent = "Error adding event: " + error.message;
+      addEventMsg.className = "message error";
     }
   };
 
-  const renderProjects = (filteredProjects = projects) => {
-    const projectLeads = [...new Set(projects.map(p => p.projectLead))];
-
+  const renderProjects = () => {
     dashboardContent.innerHTML = `
       <section class="dashboard-panel">
         <h2 class="panel-title">Project Management</h2>
@@ -219,7 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
           </select>
           <select id="leadFilter">
             <option value="all">All Leads</option>
-            ${projectLeads.map(lead => `<option value="${lead}">${lead}</option>`).join('')}
           </select>
           <button id="addNewProjectBtn" class="primary-btn">Add New Project</button>
         </div>
@@ -232,97 +234,124 @@ document.addEventListener("DOMContentLoaded", () => {
                 <th>Completion</th>
                 <th>Project Lead</th>
                 <th>End Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="projectsTableBody">
-              ${filteredProjects.length > 0 ? filteredProjects.map(p => `
-                <tr>
-                  <td>${p.projectName}</td>
-                  <td class="status-${p.status}">${p.status}</td>
-                  <td>
-                    <div class="progress-bar">
-                      <div class="progress-fill" style="width: ${p.completion}%"></div>
-                      <div class="progress-text">${p.completion}%</div>
-                    </div>
-                  </td>
-                  <td>${p.projectLead}</td>
-                  <td>${p.endDate}</td>
-                </tr>
-              `).join('') : `<tr><td colspan="5" class="no-results">No projects found.</td></tr>`}
-            </tbody>
+            <tbody id="projectsTableBody"></tbody>
           </table>
         </div>
       </section>
-      <div id="addProjectModal" class="modal">
-        <div class="modal-content">
-          <span class="close-btn">&times;</span>
-          <h3>Add New Project</h3>
-          <form id="addProjectForm">
-            <label for="projectName">Project Name:</label>
-            <input type="text" id="addProjectName" required>
-
-            <label for="projectLead">Project Lead:</label>
-            <input type="text" id="addProjectLead" required>
-            
-            <label for="startDate">Start Date:</label>
-            <input type="date" id="addStartDate" required>
-            
-            <label for="endDate">End Date:</label>
-            <input type="date" id="addEndDate" required>
-            
-            <label for="status">Status:</label>
-            <select id="addStatus" required>
-              <option value="ongoing">Ongoing</option>
-              <option value="on-hold">On Hold</option>
-              <option value="completed">Completed</option>
-            </select>
-            
-            <label for="completion">Completion %:</label>
-            <input type="number" id="addCompletion" min="0" max="100" value="0" required>
-            
-            <button type="submit">Create Project</button>
-            <p id="addProjectMsg" class="message"></p>
-          </form>
-        </div>
-      </div>
     `;
 
-    document.getElementById("addNewProjectBtn").addEventListener("click", () => {
-      document.getElementById("addProjectModal").style.display = "flex";
-      // Close modal logic
-      document.querySelector("#addProjectModal .close-btn").onclick = () => document.getElementById("addProjectModal").style.display = "none";
-      window.onclick = (event) => {
-        if (event.target === document.getElementById("addProjectModal")) {
-          document.getElementById("addProjectModal").style.display = "none";
-        }
+    // Real-time listener for projects
+    onSnapshot(collection(db, "projects"), (snapshot) => {
+      const projects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const projectsTableBody = document.getElementById("projectsTableBody");
+      const projectLeads = [...new Set(projects.map(p => p.projectLead))];
+      const leadFilterSelect = document.getElementById("leadFilter");
+      leadFilterSelect.innerHTML = `<option value="all">All Leads</option>` + projectLeads.map(lead => `<option value="${lead}">${lead}</option>`).join('');
+      
+      const applyFilters = () => {
+        const searchTerm = document.getElementById("projectSearch").value.toLowerCase();
+        const statusTerm = document.getElementById("statusFilter").value;
+        const leadTerm = document.getElementById("leadFilter").value;
+        const filtered = projects.filter(p => {
+          const matchesSearch = p.projectName.toLowerCase().includes(searchTerm);
+          const matchesStatus = statusTerm === "all" || p.status === statusTerm;
+          const matchesLead = leadTerm === "all" || p.projectLead === leadTerm;
+          return matchesSearch && matchesStatus && matchesLead;
+        });
+        projectsTableBody.innerHTML = filtered.length > 0 ? filtered.map(p => `
+          <tr>
+            <td>${p.projectName}</td>
+            <td class="status-${p.status}">${p.status}</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${p.completion}%"></div>
+                <div class="progress-text">${p.completion}%</div>
+              </div>
+            </td>
+            <td>${p.projectLead}</td>
+            <td>${p.endDate}</td>
+            <td>
+              <button class="edit-btn" data-id="${p.id}">Edit</button>
+              <button class="delete-btn" data-id="${p.id}">Delete</button>
+            </td>
+          </tr>
+        `).join('') : `<tr><td colspan="6" class="no-results">No projects found.</td></tr>`;
+        addEventListenersForProjectActions();
       };
-    });
-    
-    // NEW: Handle Add Project Form Submission
-    document.getElementById("addProjectForm").addEventListener("submit", addNewProject);
 
-    const projectSearch = document.getElementById("projectSearch");
-    const statusFilter = document.getElementById("statusFilter");
-    const leadFilter = document.getElementById("leadFilter");
-    const applyFilters = () => {
-      const searchTerm = projectSearch.value.toLowerCase();
-      const statusTerm = statusFilter.value;
-      const leadTerm = leadFilter.value;
-      const filtered = projects.filter(p => {
-        const matchesSearch = p.projectName.toLowerCase().includes(searchTerm);
-        const matchesStatus = statusTerm === "all" || p.status === statusTerm;
-        const matchesLead = leadTerm === "all" || p.projectLead === leadTerm;
-        return matchesSearch && matchesStatus && matchesLead;
+      applyFilters();
+      document.getElementById("projectSearch").addEventListener("input", applyFilters);
+      document.getElementById("statusFilter").addEventListener("change", applyFilters);
+      document.getElementById("leadFilter").addEventListener("change", applyFilters);
+    });
+
+    document.getElementById("addNewProjectBtn").addEventListener("click", () => openModal(addProjectModal));
+    document.getElementById("addProjectForm").addEventListener("submit", addNewProject);
+  };
+  
+  const addEventListenersForProjectActions = () => {
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const projectId = e.target.dataset.id;
+        if (confirm("Are you sure you want to delete this project?")) {
+          try {
+            await deleteDoc(doc(db, "projects", projectId));
+            alert("Project deleted successfully!");
+          } catch (err) {
+            alert("Error deleting project: " + err.message);
+          }
+        }
       });
-      renderProjects(filtered);
-    };
-    projectSearch.addEventListener("input", applyFilters);
-    statusFilter.addEventListener("change", applyFilters);
-    leadFilter.addEventListener("change", applyFilters);
+    });
+
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const projectId = e.target.dataset.id;
+        const projectDoc = await getDoc(doc(db, "projects", projectId));
+        if (projectDoc.exists()) {
+          const data = projectDoc.data();
+          document.getElementById("editProjectId").value = projectId;
+          document.getElementById("editProjectName").value = data.projectName;
+          document.getElementById("editProjectLead").value = data.projectLead;
+          document.getElementById("editStartDate").value = data.startDate;
+          document.getElementById("editEndDate").value = data.endDate;
+          document.getElementById("editStatus").value = data.status;
+          document.getElementById("editCompletion").value = data.completion;
+          openModal(editProjectModal);
+        }
+      });
+    });
+    document.getElementById("editProjectForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const projectId = document.getElementById("editProjectId").value;
+      const editProjectMsg = document.getElementById("editProjectMsg");
+      const updatedProject = {
+        projectName: document.getElementById("editProjectName").value,
+        projectLead: document.getElementById("editProjectLead").value,
+        startDate: document.getElementById("editStartDate").value,
+        endDate: document.getElementById("editEndDate").value,
+        status: document.getElementById("editStatus").value,
+        completion: Number(document.getElementById("editCompletion").value),
+      };
+
+      try {
+        await updateDoc(doc(db, "projects", projectId), updatedProject);
+        editProjectMsg.textContent = "Project updated successfully!";
+        editProjectMsg.className = "message success";
+        setTimeout(() => closeModal(editProjectModal), 1500);
+      } catch (err) {
+        editProjectMsg.textContent = "Error updating project: " + err.message;
+        editProjectMsg.className = "message error";
+      }
+    });
   };
 
   const addNewProject = async (e) => {
     e.preventDefault();
+    const addProjectMsg = document.getElementById("addProjectMsg");
     const newProject = {
       projectName: document.getElementById("addProjectName").value,
       projectLead: document.getElementById("addProjectLead").value,
@@ -333,20 +362,12 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     try {
       await addDoc(collection(db, "projects"), newProject);
-      const addProjectMsg = document.getElementById("addProjectMsg");
       addProjectMsg.textContent = "Project added successfully!";
       addProjectMsg.className = "message success";
-      // Refresh the project list
-      await fetchData(auth.currentUser);
-      renderProjects();
-      // Hide the modal after a short delay
-      setTimeout(() => {
-        document.getElementById("addProjectModal").style.display = "none";
-      }, 1500);
+      setTimeout(() => closeModal(addProjectModal), 1500);
     } catch (error) {
-      document.getElementById("addProjectMsg").textContent = "Error adding project: " + error.message;
-      document.getElementById("addProjectMsg").className = "message error";
-      console.error("Error adding project:", error);
+      addProjectMsg.textContent = "Error adding project: " + error.message;
+      addProjectMsg.className = "message error";
     }
   };
 
@@ -364,44 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </section>
     `;
-    document.getElementById("editProfileBtn").addEventListener("click", showProfileModal);
-  };
-
-  const showProfileModal = () => {
-    const modal = document.getElementById("profileModal");
-    const modalForm = document.getElementById("profileUpdateForm");
-    const closeBtn = modal.querySelector(".close-btn");
-    
-    document.getElementById("modalDisplayName").value = userProfile.name || '';
-    document.getElementById("modalPhone").value = userProfile.phone || '';
-    document.getElementById("modalAddress").value = userProfile.address || '';
-    
-    modal.style.display = "flex";
-
-    closeBtn.onclick = () => modal.style.display = "none";
-    window.onclick = (event) => {
-      if (event.target === modal) modal.style.display = "none";
-      };
-
-    modalForm.onsubmit = async (e) => {
-      e.preventDefault();
-      const updatedProfile = {
-        name: document.getElementById("modalDisplayName").value,
-        phone: document.getElementById("modalPhone").value,
-        address: document.getElementById("modalAddress").value,
-      };
-
-      try {
-        await updateDoc(doc(db, "users", auth.currentUser.uid), updatedProfile);
-        userProfile = { ...userProfile, ...updatedProfile };
-        document.getElementById("profileUpdateMessage").textContent = "Profile updated successfully!";
-        document.getElementById("profileUpdateMessage").className = "message success";
-        renderProfile();
-      } catch (error) {
-        document.getElementById("profileUpdateMessage").textContent = "Error updating profile: " + error.message;
-        document.getElementById("profileUpdateMessage").className = "message error";
-      }
-    };
+    document.getElementById("editProfileBtn").addEventListener("click", () => openModal(editProfileModal));
   };
 
   const initDashboard = async (user) => {
@@ -409,8 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
     await fetchData(user); 
     document.getElementById("userName").textContent = `Hello, ${userProfile.name || 'User'}`;
     renderOverview();
-    updateNotificationBadge();
-    setupNavListeners(); // Setup event listeners after initial data is loaded
+    setupNavListeners(); 
   }
 
   onAuthStateChanged(auth, async (user) => {
@@ -421,17 +404,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  logoutBtn.addEventListener("click", () => {
-    signOut(auth).then(() => {
-      window.location.href = "login.html";
-    }).catch((error) => {
-      console.error("Logout failed:", error);
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      }).catch((error) => {
+        console.error("Logout failed:", error);
+      });
     });
-  });
+  }
 
-  sidebarToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
-  });
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("collapsed");
+    });
+  }
 
   if (localStorage.getItem("theme") === "light") {
     document.body.classList.add("light-mode");
@@ -446,27 +433,70 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("theme", isLight ? "light" : "dark");
   });
 
-  document.getElementById("passwordUpdateForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const newPassword = document.getElementById("newPassword").value;
-    const passwordMsg = document.getElementById("passwordMsg");
-    if (newPassword.length < 6) {
-      passwordMsg.textContent = "Password must be at least 6 characters.";
-      passwordMsg.className = "message error";
-      return;
-    }
-    try {
-      await updatePassword(auth.currentUser, newPassword);
-      passwordMsg.textContent = "Password updated successfully.";
-      passwordMsg.className = "message success";
-    } catch (err) {
-      passwordMsg.textContent = "Error: " + err.message;
-      passwordMsg.className = "message error";
-    }
-  });
+  const profileUpdateForm = document.getElementById("profileUpdateForm");
+  const passwordUpdateForm = document.getElementById("passwordUpdateForm");
 
-  const updateNotificationBadge = () => {
-    document.getElementById("notifCount").textContent = notifs.length;
-    document.getElementById("notifCount").style.display = notifs.length > 0 ? "block" : "none";
-  };
+  if (profileUpdateForm) {
+    profileUpdateForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const updatedProfile = {
+        name: document.getElementById("modalDisplayName").value,
+        phone: document.getElementById("modalPhone").value,
+        address: document.getElementById("modalAddress").value,
+      };
+      try {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), updatedProfile);
+        userProfile = { ...userProfile, ...updatedProfile };
+        document.getElementById("profileUpdateMessage").textContent = "Profile updated successfully!";
+        document.getElementById("profileUpdateMessage").className = "message success";
+        renderProfile();
+      } catch (error) {
+        document.getElementById("profileUpdateMessage").textContent = "Error updating profile: " + error.message;
+        document.getElementById("profileUpdateMessage").className = "message error";
+      }
+    };
+  }
+
+  if (passwordUpdateForm) {
+    passwordUpdateForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const newPassword = document.getElementById("newPassword").value;
+      const passwordMsg = document.getElementById("passwordMsg");
+      if (newPassword.length < 6) {
+        passwordMsg.textContent = "Password must be at least 6 characters.";
+        passwordMsg.className = "message error";
+        return;
+      }
+      try {
+        await updatePassword(auth.currentUser, newPassword);
+        passwordMsg.textContent = "Password updated successfully.";
+        passwordMsg.className = "message success";
+      } catch (err) {
+        passwordMsg.textContent = "Error: " + err.message;
+        passwordMsg.className = "message error";
+      }
+    });
+  }
+
+  const profileEditForm = document.getElementById("profileEditForm");
+  if (profileEditForm) {
+    profileEditForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const updatedProfile = {
+        name: document.getElementById("modalName").value,
+        phone: document.getElementById("modalPhone").value,
+        address: document.getElementById("modalAddress").value,
+      };
+      try {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), updatedProfile);
+        userProfile = { ...userProfile, ...updatedProfile };
+        document.getElementById("profileUpdateMessage").textContent = "Profile updated successfully!";
+        document.getElementById("profileUpdateMessage").className = "message success";
+        renderProfile();
+      } catch (error) {
+        document.getElementById("profileUpdateMessage").textContent = "Error updating profile: " + error.message;
+        document.getElementById("profileUpdateMessage").className = "message error";
+      }
+    };
+  }
 });

@@ -41,60 +41,69 @@
 
   </div>
 
-  <div id="profileModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h3>Update Profile</h3>
-      <form id="profileUpdateForm">
-        <label for="modalDisplayName">Name:</label>
-        <input type="text" id="modalDisplayName" name="displayName" required>
-        <label for="modalPhone">Phone:</label>
-        <input type="tel" id="modalPhone" name="phone">
-        <label for="modalAddress">Address:</label>
-        <input type="text" id="modalAddress" name="address">
-        <button type="submit" id="modalSaveBtn">Save Changes</button>
-        <p id="profileUpdateMessage" class="message"></p>
-      </form>
-      <hr>
-      <h3>Change Password</h3>
-      <form id="passwordUpdateForm">
-        <label for="newPassword">New Password:</label>
-        <input type="password" id="newPassword" name="newPassword" required>
-        <button type="submit" id="passBtn">Update Password</button>
-        <p id="passwordMsg" class="message"></p>
-      </form>
-    </div>
-  </div>
-
   <div id="addProjectModal" class="modal">
     <div class="modal-content">
       <span class="close-btn">&times;</span>
       <h3>Add New Project</h3>
       <form id="addProjectForm">
-        <label for="projectName">Project Name:</label>
+        <label for="addProjectName">Project Name:</label>
         <input type="text" id="addProjectName" required>
 
-        <label for="projectLead">Project Lead:</label>
+        <label for="addProjectLead">Project Lead:</label>
         <input type="text" id="addProjectLead" required>
         
-        <label for="startDate">Start Date:</label>
+        <label for="addStartDate">Start Date:</label>
         <input type="date" id="addStartDate" required>
         
-        <label for="endDate">End Date:</label>
+        <label for="addEndDate">End Date:</label>
         <input type="date" id="addEndDate" required>
         
-        <label for="status">Status:</label>
+        <label for="addStatus">Status:</label>
         <select id="addStatus" required>
           <option value="ongoing">Ongoing</option>
           <option value="on-hold">On Hold</option>
           <option value="completed">Completed</option>
         </select>
         
-        <label for="completion">Completion %:</label>
+        <label for="addCompletion">Completion %:</label>
         <input type="number" id="addCompletion" min="0" max="100" value="0" required>
         
         <button type="submit">Create Project</button>
         <p id="addProjectMsg" class="message"></p>
+      </form>
+    </div>
+  </div>
+
+  <div id="editProjectModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Edit Project</h3>
+      <form id="editProjectForm">
+        <input type="hidden" id="editProjectId">
+        <label for="editProjectName">Project Name:</label>
+        <input type="text" id="editProjectName" required>
+        
+        <label for="editProjectLead">Project Lead:</label>
+        <input type="text" id="editProjectLead" required>
+        
+        <label for="editStartDate">Start Date:</label>
+        <input type="date" id="editStartDate" required>
+        
+        <label for="editEndDate">End Date:</label>
+        <input type="date" id="editEndDate" required>
+
+        <label for="editStatus">Status:</label>
+        <select id="editStatus" required>
+          <option value="ongoing">Ongoing</option>
+          <option value="on-hold">On Hold</option>
+          <option value="completed">Completed</option>
+        </select>
+        
+        <label for="editCompletion">Completion %:</label>
+        <input type="number" id="editCompletion" min="0" max="100" required>
+        
+        <button type="submit">Update Project</button>
+        <p id="editProjectMsg" class="message"></p>
       </form>
     </div>
   </div>
@@ -119,10 +128,29 @@
     </div>
   </div>
 
+  <div id="editProfileModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>Edit Profile</h3>
+      <form id="profileEditForm">
+        <label for="modalName">Name:</label>
+        <input type="text" id="modalName" required>
+
+        <label for="modalPhone">Phone:</label>
+        <input type="tel" id="modalPhone">
+
+        <label for="modalAddress">Address:</label>
+        <textarea id="modalAddress" rows="3"></textarea>
+        
+        <button type="submit">Save Changes</button>
+        <p id="profileUpdateMessage" class="message"></p>
+      </form>
+    </div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js"></script>
   <script type="module" src="dashboard.js"></script>
 </body>
 </html>
