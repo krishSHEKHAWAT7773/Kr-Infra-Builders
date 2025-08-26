@@ -4,153 +4,301 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard | KR Infra Builders</title>
-  <link rel="stylesheet" href="globals.css" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js is no longer needed if chart is removed -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 </head>
-<body class="desktop">
+<body class="dashboard-body">
 
-  <div class="dashboard-theme">
+  <div class="dashboard-wrapper">
     
+    <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="brand">Kr Infra Builders</div>
-      <div id="overviewTab" class="nav-item active"><i class="fas fa-chart-line"></i> <span>Dashboard</span></div>
-      <div id="scheduleTab" class="nav-item"><i class="fas fa-calendar-alt"></i> <span>Schedule</span></div>
-      <div id="projectsTab" class="nav-item"><i class="fas fa-folder-open"></i> <span>Projects</span></div>
-      <div id="profileTab" class="nav-item"><i class="fas fa-user"></i> <span>Profile</span></div>
-      <div id="logoutBtn" class="nav-item logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></div>
+      <div class="sidebar-header">
+        <span class="sidebar-brand">KR Infra Builders</span>
+        <button id="sidebarToggle" class="sidebar-toggle-btn"><i class="fas fa-bars"></i></button>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><div id="overviewTab" class="nav-item active"><i class="fas fa-chart-line"></i> <span class="nav-text">Dashboard</span></div></li>
+          <li><div id="scheduleTab" class="nav-item"><i class="fas fa-calendar-alt"></i> <span class="nav-text">Schedule</span></div></li>
+          <li><div id="projectsTab" class="nav-item"><i class="fas fa-folder-open"></i> <span class="nav-text">Projects</span></div></li>
+          <li><div id="profileTab" class="nav-item"><i class="fas fa-user"></i> <span class="nav-text">Profile</span></div></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div id="logoutBtn" class="nav-item logout-btn"><i class="fas fa-sign-out-alt"></i> <span class="nav-text">Logout</span></div>
+        <button id="themeToggleBtn" class="theme-toggle-btn dashboard-theme-toggle">🌙</button>
+      </div>
     </aside>
 
-    <header class="dash-header">
-      <div class="header-left">
-        <button id="sidebarToggle" class="hamburger"><i class="fas fa-bars"></i></button>
-        <button id="themeToggleBtn" title="Toggle Light/Dark Mode">🌙</button>
-      </div>
-      <div class="header-right">
-        <div id="notifBtn" class="notif-btn">
-          <i class="fas fa-bell"></i>
-          <span id="notifCount" class="badge">0</span>
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-title-area">
+          <h1 id="currentPanelTitle" class="current-panel-title">Dashboard</h1>
         </div>
-        <span id="userName">Hello</span>
+        <div class="header-user-info">
+          <span id="userName" class="user-greeting">Hello, User</span>
+          <!-- Notifications can go here -->
+          <!-- <button id="notifBtn" class="notification-btn"><i class="fas fa-bell"></i><span class="badge">3</span></button> -->
+        </div>
+      </header>
+
+      <section id="dashboardPanels" class="dashboard-panels-container">
+        <!-- Overview Panel -->
+        <div id="overview-panel" class="dashboard-panel active">
+          <div class="panel-content">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon bg-blue-500"><i class="fas fa-folder-open"></i></div>
+                <div class="stat-info">
+                  <span class="stat-label">Ongoing Projects</span>
+                  <span id="ongoingCount" class="stat-value">0</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-green-500"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-info">
+                  <span class="stat-label">Completed Projects</span>
+                  <span id="completedCount" class="stat-value">0</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-yellow-500"><i class="fas fa-pause-circle"></i></div>
+                <div class="stat-info">
+                  <span class="stat-label">On Hold Projects</span>
+                  <span id="onHoldCount" class="stat-value">0</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon bg-red-500"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="stat-info">
+                  <span class="stat-label">Near Deadline</span>
+                  <span id="nearDeadlineCount" class="stat-value">0</span>
+                </div>
+              </div>
+            </div>
+            <!-- Chart Area Removed -->
+            <!-- <div class="chart-area">
+              <div class="chart-card">
+                <h3 class="chart-title">Project Status Distribution</h3>
+                <canvas id="projectStatusChart"></canvas>
+              </div>
+            </div> -->
+          </div>
+        </div>
+
+        <!-- Schedule Panel -->
+        <div id="schedule-panel" class="dashboard-panel">
+          <div class="panel-header-with-action">
+            <h2 class="panel-title">Upcoming Schedule</h2>
+            <button id="addEventBtn" class="action-btn primary-btn"><i class="fas fa-plus"></i> Add Event</button>
+          </div>
+          <div class="panel-content">
+            <div id="eventsList" class="events-list">
+              <!-- Events will be loaded here by renderSchedule() -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Projects Panel -->
+        <div id="projects-panel" class="dashboard-panel">
+          <div class="panel-header-with-action">
+            <h2 class="panel-title">Project Management</h2>
+            <button id="addNewProjectBtn" class="action-btn primary-btn"><i class="fas fa-plus"></i> Add Project</button>
+          </div>
+          <div class="panel-content">
+            <div class="project-toolbar">
+              <input type="text" id="projectSearch" placeholder="Search projects..." class="form-input">
+              <select id="statusFilter" class="form-select">
+                <option value="all">All Statuses</option>
+                <option value="ongoing">Ongoing</option>
+                <option value="completed">Completed</option>
+                <option value="on-hold">On Hold</option>
+              </select>
+              <select id="leadFilter" class="form-select">
+                <option value="all">All Leads</option>
+              </select>
+            </div>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Project Name</th>
+                    <th>Status</th>
+                    <th>Completion</th>
+                    <th>Project Lead</th>
+                    <th>End Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="projectsTableBody">
+                  <!-- Projects will be loaded here by renderProjects() -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Panel -->
+        <div id="profile-panel" class="dashboard-panel">
+          <div class="panel-header-with-action">
+            <h2 class="panel-title">My Profile</h2>
+            <button id="editProfileBtn" class="action-btn primary-btn"><i class="fas fa-edit"></i> Edit Profile</button>
+          </div>
+          <div class="panel-content">
+            <div class="profile-details-card">
+              <p><strong>Name:</strong> <span id="profileName"></span></p>
+              <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+              <p><strong>Role:</strong> <span id="profileRole"></span></p>
+              <p><strong>Phone:</strong> <span id="profilePhone"></span></p>
+              <p><strong>Address:</strong> <span id="profileAddress"></span></p>
+              <button id="changePasswordBtn" class="action-btn secondary-btn mt-4"><i class="fas fa-key"></i> Change Password</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- Add Project Modal -->
+    <div id="addProjectModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3 class="modal-title">Add New Project</h3>
+        <form id="addProjectForm" class="modal-form">
+          <label for="addProjectName">Project Name:</label>
+          <input type="text" id="addProjectName" required class="modal-input">
+          
+          <label for="addProjectLead">Project Lead:</label>
+          <input type="text" id="addProjectLead" required class="modal-input">
+          
+          <label for="addStartDate">Start Date:</label>
+          <input type="date" id="addStartDate" required class="modal-input">
+          
+          <label for="addEndDate">End Date:</label>
+          <input type="date" id="addEndDate" required class="modal-input">
+          
+          <label for="addStatus">Status:</label>
+          <select id="addStatus" required class="modal-select">
+            <option value="ongoing">Ongoing</option>
+            <option value="on-hold">On Hold</option>
+            <option value="completed">Completed</option>
+          </select>
+          
+          <label for="addCompletion">Completion %:</label>
+          <input type="number" id="addCompletion" min="0" max="100" required class="modal-input">
+          
+          <button type="submit" class="modal-submit-btn">Create Project</button>
+          <p id="addProjectMsg" class="message"></p>
+        </form>
       </div>
-    </header>
-
-    <main id="dashboardContent">
-      </main>
-
-  </div>
-
-  <div id="addProjectModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h3>Add New Project</h3>
-      <form id="addProjectForm">
-        <label for="addProjectName">Project Name:</label>
-        <input type="text" id="addProjectName" required>
-
-        <label for="addProjectLead">Project Lead:</label>
-        <input type="text" id="addProjectLead" required>
-        
-        <label for="addStartDate">Start Date:</label>
-        <input type="date" id="addStartDate" required>
-        
-        <label for="addEndDate">End Date:</label>
-        <input type="date" id="addEndDate" required>
-        
-        <label for="addStatus">Status:</label>
-        <select id="addStatus" required>
-          <option value="ongoing">Ongoing</option>
-          <option value="on-hold">On Hold</option>
-          <option value="completed">Completed</option>
-        </select>
-        
-        <label for="addCompletion">Completion %:</label>
-        <input type="number" id="addCompletion" min="0" max="100" value="0" required>
-        
-        <button type="submit">Create Project</button>
-        <p id="addProjectMsg" class="message"></p>
-      </form>
     </div>
-  </div>
 
-  <div id="editProjectModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h3>Edit Project</h3>
-      <form id="editProjectForm">
-        <input type="hidden" id="editProjectId">
-        <label for="editProjectName">Project Name:</label>
-        <input type="text" id="editProjectName" required>
-        
-        <label for="editProjectLead">Project Lead:</label>
-        <input type="text" id="editProjectLead" required>
-        
-        <label for="editStartDate">Start Date:</label>
-        <input type="date" id="editStartDate" required>
-        
-        <label for="editEndDate">End Date:</label>
-        <input type="date" id="editEndDate" required>
-
-        <label for="editStatus">Status:</label>
-        <select id="editStatus" required>
-          <option value="ongoing">Ongoing</option>
-          <option value="on-hold">On Hold</option>
-          <option value="completed">Completed</option>
-        </select>
-        
-        <label for="editCompletion">Completion %:</label>
-        <input type="number" id="editCompletion" min="0" max="100" required>
-        
-        <button type="submit">Update Project</button>
-        <p id="editProjectMsg" class="message"></p>
-      </form>
+    <!-- Edit Project Modal -->
+    <div id="editProjectModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3 class="modal-title">Edit Project</h3>
+        <form id="editProjectForm" class="modal-form">
+          <input type="hidden" id="editProjectId">
+          
+          <label for="editProjectName">Project Name:</label>
+          <input type="text" id="editProjectName" required class="modal-input">
+          
+          <label for="editProjectLead">Project Lead:</label>
+          <input type="text" id="editProjectLead" required class="modal-input">
+          
+          <label for="editStartDate">Start Date:</label>
+          <input type="date" id="editStartDate" required class="modal-input">
+          
+          <label for="editEndDate">End Date:</label>
+          <input type="date" id="editEndDate" required class="modal-input">
+          
+          <label for="editStatus">Status:</label>
+          <select id="editStatus" required class="modal-select">
+            <option value="ongoing">Ongoing</option>
+            <option value="on-hold">On Hold</option>
+            <option value="completed">Completed</option>
+          </select>
+          
+          <label for="editCompletion">Completion %:</label>
+          <input type="number" id="editCompletion" min="0" max="100" required class="modal-input">
+          
+          <button type="submit" class="modal-submit-btn">Update Project</button>
+          <p id="editProjectMsg" class="message"></p>
+        </form>
+      </div>
     </div>
-  </div>
 
-  <div id="addEventModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h3>Add New Event</h3>
-      <form id="addEventForm">
-        <label for="eventTitle">Event Title:</label>
-        <input type="text" id="eventTitle" required>
-        
-        <label for="eventDate">Date:</label>
-        <input type="date" id="eventDate" required>
-        
-        <label for="eventDescription">Description:</label>
-        <textarea id="eventDescription" rows="4"></textarea>
-        
-        <button type="submit">Create Event</button>
-        <p id="addEventMsg" class="message"></p>
-      </form>
+    <!-- Add Event Modal -->
+    <div id="addEventModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3 class="modal-title">Add New Event</h3>
+        <form id="addEventForm" class="modal-form">
+          <label for="eventTitle">Event Title:</label>
+          <input type="text" id="eventTitle" required class="modal-input">
+          
+          <label for="eventDate">Date:</label>
+          <input type="date" id="eventDate" required class="modal-input">
+          
+          <label for="eventDescription">Description:</label>
+          <textarea id="eventDescription" rows="4" class="modal-input"></textarea>
+          
+          <button type="submit" class="modal-submit-btn">Create Event</button>
+          <p id="addEventMsg" class="message"></p>
+        </form>
+      </div>
     </div>
-  </div>
 
-  <div id="editProfileModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h3>Edit Profile</h3>
-      <form id="profileEditForm">
-        <label for="modalName">Name:</label>
-        <input type="text" id="modalName" required>
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3 class="modal-title">Edit Profile</h3>
+        <form id="profileEditForm" class="modal-form">
+          <label for="modalName">Name:</label>
+          <input type="text" id="modalName" required class="modal-input">
 
-        <label for="modalPhone">Phone:</label>
-        <input type="tel" id="modalPhone">
+          <label for="modalEmail">Email:</label>
+          <input type="email" id="modalEmail" disabled class="modal-input disabled-input">
 
-        <label for="modalAddress">Address:</label>
-        <textarea id="modalAddress" rows="3"></textarea>
-        
-        <button type="submit">Save Changes</button>
-        <p id="profileUpdateMessage" class="message"></p>
-      </form>
+          <label for="modalPhone">Phone:</label>
+          <input type="tel" id="modalPhone" class="modal-input">
+
+          <label for="modalAddress">Address:</label>
+          <textarea id="modalAddress" rows="3" class="modal-input"></textarea>
+          
+          <button type="submit" class="modal-submit-btn">Save Changes</button>
+          <p id="profileUpdateMessage" class="message"></p>
+        </form>
+      </div>
     </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3 class="modal-title">Change Password</h3>
+        <form id="passwordUpdateForm" class="modal-form">
+          <label for="newPassword">New Password:</label>
+          <input type="password" id="newPassword" required class="modal-input">
+          
+          <button type="submit" class="modal-submit-btn">Update Password</button>
+          <p id="passwordMsg" class="message"></p>
+        </form>
+      </div>
+    </div>
+
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"></script>
   <script type="module" src="dashboard.js"></script>
 </body>
 </html>
