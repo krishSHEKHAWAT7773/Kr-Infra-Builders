@@ -9,8 +9,7 @@ import {
   addDoc, deleteDoc, onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-// Chart.js is assumed to be globally available via the <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-// in your dashboard.html, so no direct 'import Chart from ...' here.
+// Chart.js is no longer needed or imported directly as the chart has been removed.
 
 document.addEventListener("DOMContentLoaded", () => {
   const firebaseConfig = {
@@ -44,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const changePasswordModal = document.getElementById("changePasswordModal"); // New password modal
 
   let userProfile = {};
-  let projectStatusChartInstance; // To store the Chart.js instance for proper destruction
+  // projectStatusChartInstance is removed as chart is no longer needed.
 
   // --- Utility Functions for Modals & Messages ---
   const showMessage = (elementId, message, isSuccess) => {
@@ -198,8 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("onHoldCount").textContent = onHold;
       document.getElementById("nearDeadlineCount").textContent = nearDeadline;
 
-      // Update Chart.js (Chart object is assumed global)
-      updateProjectStatusChart(ongoing, completed, onHold);
+      // Removed updateProjectStatusChart call
     });
   };
 
@@ -480,53 +478,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // --- Chart.js Configuration ---
-  const updateProjectStatusChart = (ongoing, completed, onHold) => {
-    const ctx = document.getElementById("projectStatusChart")?.getContext("2d");
-    if (!ctx) {
-        console.warn("Chart canvas context not found for update. Skipping chart update.");
-        return;
-    }
-
-    if (projectStatusChartInstance) {
-      projectStatusChartInstance.destroy(); // Destroy existing chart instance
-    }
-
-    // Determine colors based on theme
-    const isDarkMode = document.body.classList.contains("dark-mode");
-    const legendColor = isDarkMode ? 'white' : 'grey';
-    const titleColor = isDarkMode ? 'white' : 'grey';
-
-    projectStatusChartInstance = new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: ["Ongoing", "Completed", "On Hold"],
-        datasets: [{
-          data: [ongoing, completed, onHold],
-          backgroundColor: ["#007bff", "#28a745", "#ffc107"], // Blue, Green, Yellow
-          hoverOffset: 4,
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: "top",
-            labels: {
-              color: legendColor
-            }
-          },
-          title: {
-            display: true,
-            text: "Project Status Distribution",
-            color: titleColor
-          },
-        },
-      },
-    });
-  };
-
   // --- Delete Functions ---
   const deleteProject = async (id) => {
     if (confirm("Are you sure you want to delete this project?")) {
@@ -659,12 +610,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.toggle("dark-mode", isDarkMode);
       themeToggleBtn.textContent = isDarkMode ? "☀️" : "🌙";
       localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-      // Update chart colors if chart exists
-      if (projectStatusChartInstance) {
-        projectStatusChartInstance.options.plugins.legend.labels.color = isDarkMode ? 'white' : 'grey';
-        projectStatusChartInstance.options.plugins.title.color = isDarkMode ? 'white' : 'grey';
-        projectStatusChartInstance.update();
-      }
+      // Chart related theme update logic removed.
     };
 
     applyTheme(isDarkModeInitial); // Apply initial theme
