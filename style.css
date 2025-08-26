@@ -121,7 +121,7 @@ img {
   text-align: center;
   color: #fff;
   padding: 0 1.5rem;
-  background-image: url('https://placehold.co/1920x1080/000000/FFFFFF?text=Modern+Construction+Background'); /* Placeholder image */
+  background-image: url('background.png'); /* Placeholder image */
   background-size: cover;
   background-position: center;
   background-attachment: fixed; /* Parallax effect */
