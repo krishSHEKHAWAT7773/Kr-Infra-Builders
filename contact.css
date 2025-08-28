@@ -1,5 +1,5 @@
 /* ===================== */
-/* 🔧 Reset & Base Styles */
+/* 肌 Reset & Base Styles */
 /* ===================== */
 * {
   margin: 0;
@@ -61,7 +61,7 @@ img {
 }
 
 /* ===================== */
-/* 🔷 Navigation Bar */
+/* 塙 Navigation Bar */
 /* ===================== */
 .navbar {
   background: linear-gradient(to right, #1a237e, #4a148c); /* Deep blue to rich purple gradient */
@@ -76,6 +76,7 @@ img {
   justify-content: space-between;
   align-items: center;
   padding: 0 1.5rem;
+  position: relative; /* Add this for the absolute menu positioning */
 }
 .brand-logo {
   font-size: 1.9rem; /* Slightly larger brand name */
@@ -85,6 +86,23 @@ img {
   letter-spacing: 0.08em; /* Increased letter spacing for classic feel */
   text-shadow: 1px 1px 3px rgba(0,0,0,0.3); /* Subtle text shadow */
 }
+
+/* Hamburger button styles - hidden by default */
+.hamburger-menu {
+  display: none; /* Hide on desktop */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #fff;
+  transition: transform 0.3s ease;
+  z-index: 1001;
+}
+
+.hamburger-menu:focus {
+    outline: 3px solid #ffc107 !important;
+}
+
 .nav-links {
   list-style: none;
   display: flex;
@@ -125,7 +143,7 @@ img {
 }
 
 /* ===================== */
-/* 🧱 Footer */
+/* ｧｱ Footer */
 /* ===================== */
 .main-footer {
   background-color: #1e1e2e; /* Deep dark background for footer */
@@ -411,7 +429,7 @@ body.dark-mode .contact-submit-btn:hover {
 }
 
 /* ===================== */
-/* 📱 Responsive Adjustments */
+/* 導 Responsive Adjustments */
 /* ===================== */
 @media (min-width: 768px) { /* Medium screens and up */
     .contact-hero-title {
@@ -423,15 +441,42 @@ body.dark-mode .contact-submit-btn:hover {
 }
 
 @media (max-width: 767px) { /* Small screens (mobile) */
+  /* Re-adjust navbar container for mobile */
   .navbar-container {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .nav-links {
-    flex-direction: column;
-    gap: 1rem;
+    flex-direction: row; /* Keep elements in a row */
+    justify-content: space-between;
     align-items: center;
+    padding: 0 1.5rem;
   }
+  
+  /* Show the hamburger menu button */
+  .hamburger-menu {
+      display: block;
+  }
+
+  /* Make the navigation links collapsible */
+  .nav-links {
+    position: absolute;
+    top: 100%; /* Position below the navbar */
+    left: 0;
+    width: 100%;
+    max-height: 0; /* Initially hidden */
+    overflow: hidden;
+    background: linear-gradient(to right, #1a237e, #4a148c);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+  }
+  
+  /* Class to show the menu */
+  .nav-links.open {
+    max-height: 500px; /* A large enough value to reveal all links */
+    padding: 1rem 0; /* Add vertical padding when open */
+    gap: 1.5rem;
+  }
+
   .contact-hero {
       height: 40vh; /* Shorter hero on mobile */
   }
