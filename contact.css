@@ -1,0 +1,447 @@
+/* ===================== */
+/* 🔧 Reset & Base Styles */
+/* ===================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Disable user selection for a cleaner presentation */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+html {
+  scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+}
+body {
+  font-family: 'Inter', sans-serif; /* Consistent modern sans-serif font */
+  background-color: #f8f9fa; /* Soft off-white base background */
+  color: #343a40; /* Darker text for readability in light mode */
+  line-height: 1.6;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Reusable Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem; /* Consistent padding */
+}
+
+/* Accessibility Focus */
+:focus {
+  outline: 3px solid #ffc107 !important; /* Prominent yellow focus outline for accessibility and style */
+  outline-offset: 4px;
+  border-radius: 4px; /* Ensure rounded focus for inputs */
+}
+
+/* Lock Images */
+img {
+  pointer-events: none; /* Prevent image dragging/interaction */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  max-width: 100%; /* Ensure images are responsive */
+  height: auto;
+}
+
+/* ===================== */
+/* 🔷 Navigation Bar */
+/* ===================== */
+.navbar {
+  background: linear-gradient(to right, #1a237e, #4a148c); /* Deep blue to rich purple gradient */
+  padding: 1rem 0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); /* More pronounced shadow */
+  position: fixed;
+  width: 100%;
+  z-index: 1000; /* Ensure navbar is always on top */
+}
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+}
+.brand-logo {
+  font-size: 1.9rem; /* Slightly larger brand name */
+  font-weight: 800; /* Bolder brand name */
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 0.08em; /* Increased letter spacing for classic feel */
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3); /* Subtle text shadow */
+}
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2.5rem; /* More spacing between nav items */
+  font-size: 1.05rem; /* Slightly larger font size */
+}
+.nav-link-item {
+  color: #e0e0e0; /* Softer white for links */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.2s ease, text-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem; /* Slightly more space for icon */
+}
+.nav-link-item:hover, .nav-link-item.active {
+  color: #ffdb58; /* Brighter yellow on hover and active */
+  transform: translateY(-3px); /* More pronounced lift effect */
+  text-shadow: 0 0 8px rgba(255, 219, 88, 0.6); /* Glow effect */
+}
+.nav-auth-button {
+  background-color: #ffc107; /* Bright yellow button */
+  color: #1a237e !important; /* Deep blue text for contrast */
+  padding: 0.7rem 1.4rem; /* Generous padding */
+  border-radius: 9999px; /* Pill-shaped button */
+  font-weight: 700; /* Bolder text */
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4); /* Soft shadow */
+}
+.nav-auth-button:hover {
+  background-color: #ffdb58; /* Lighter yellow on hover */
+  transform: translateY(-2px) scale(1.03); /* Subtle lift and scale */
+  box-shadow: 0 6px 15px rgba(255, 193, 7, 0.6); /* Enhanced shadow */
+}
+
+/* ===================== */
+/* 🧱 Footer */
+/* ===================== */
+.main-footer {
+  background-color: #1e1e2e; /* Deep dark background for footer */
+  color: #adb5bd; /* Soft gray text */
+  padding: 3rem 0; /* More vertical padding */
+  text-align: center;
+  box-shadow: inset 0 6px 20px rgba(0, 0, 0, 0.2); /* Inner shadow for depth */
+}
+.main-footer .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; /* More spacing */
+}
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem; /* Wider spacing for social icons */
+  margin-top: 1rem;
+}
+.social-icon {
+  color: #adb5bd;
+  font-size: 1.7rem; /* Larger social icons */
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+.social-icon:hover {
+  color: #ffc107; /* Yellow on hover */
+  transform: translateY(-5px) scale(1.1); /* Lift and slight scale */
+}
+
+
+/* ===================== */
+/* Custom styles for Contact Page */
+/* ===================== */
+/* Specific hero styling for this contact page */
+.contact-hero {
+    position: relative;
+    height: 60vh; /* Taller hero section for more impact */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    padding: 0 1.5rem;
+    background-image: url('fire2.jpg'); /* Use your background.png */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Parallax effect */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* Stronger shadow for the hero bottom */
+}
+.contact-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Slightly darker overlay */
+    backdrop-filter: blur(3px); /* Subtle blur for depth */
+}
+.contact-hero-content {
+    position: relative;
+    z-index: 10;
+    animation: fadeInScale 1s ease-out; /* Custom animation for hero content */
+}
+.contact-hero-title {
+    font-size: 4.5rem; /* Larger, more impactful title */
+    font-weight: 900; /* Extra bold */
+    margin-bottom: 1rem;
+    line-height: 1.1;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5); /* Clearer text shadow */
+    letter-spacing: 0.05em; /* Classic touch */
+}
+.contact-hero-subtitle {
+    font-size: 1.8rem; /* Larger subtitle */
+    font-weight: 300;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    max-width: 800px;
+    margin: 0 auto;
+}
+.form-section {
+    background-color: #000000;/* Light background for the form section */
+    padding: 6rem 1.5rem; /* Increased vertical padding */
+    display: flex;
+    justify-content: center;
+}
+.contact-form-container {
+    width: 100%;
+    max-width: 900px; /* Even wider form container */
+    background-color: #0a0e2f;
+    border-radius: 1.5rem; /* Consistent rounded corners */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.05); /* Deeper, layered shadow */
+    padding: 3.5rem 3.5rem; /* More internal padding */
+    transform: translateY(-50px); /* Lift form slightly into the hero section */
+    position: relative;
+    z-index: 100; /* Ensure it overlaps hero if needed */
+}
+.contact-form-header {
+    text-align: center;
+    margin-bottom: 3rem; /* More space below header */
+}
+.contact-form-header h1 {
+    font-size: 3.5rem; /* Larger heading */
+    font-weight: 800;
+    color: #ffd900; /* Deep blue */
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.03em;
+}
+.contact-form-header p {
+    font-size: 1.25rem; /* Larger paragraph */
+    color: #f8fcff;
+    max-width: 600px;
+    margin: 0.5rem auto 0;
+}
+.contact-form-group {
+    margin-bottom: 1.75rem; /* More spacing between form groups */
+}
+.contact-form-label {
+    display: block;
+    font-size: 1.05rem; /* Slightly larger label */
+    font-weight: 700; /* Bolder label */
+    color: #ffffff;
+    margin-bottom: 0.6rem; /* More space below label */
+}
+.contact-form-input,
+.contact-form-textarea,
+.contact-form-select {
+    width: 100%;
+    padding: 1.1rem 1.5rem; /* More padding inside inputs */
+    border-radius: 0.75rem; /* Consistent rounded inputs */
+    border: 1px solid #c2c9d2; /* Softer border */
+    background-color: #fcfdfe; /* Almost white input background */
+    color: #343a40;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.08); /* Subtle inner shadow */
+}
+.contact-form-input:focus,
+.contact-form-textarea:focus,
+.contact-form-select:focus {
+    border-color: #007bff; /* Primary blue focus border */
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.3); /* More prominent focus ring */
+    background-color: #fff; /* White background on focus */
+}
+.contact-form-textarea {
+    min-height: 180px; /* Taller textarea */
+    resize: vertical;
+}
+.contact-submit-btn {
+    width: 100%;
+    padding: 1.2rem 2.8rem; /* Even more padding */
+    border-radius: 9999px; /* Fully rounded button */
+    background-color: #1a237e; /* Deep blue primary button */
+    color: #fff;
+    font-size: 1.25rem; /* Larger font */
+    font-weight: 800; /* Extra bold */
+    text-transform: uppercase;
+    letter-spacing: 0.08em; /* Pronounced letter spacing */
+    box-shadow: 0 10px 30px rgba(26, 35, 126, 0.3), 0 0 0 2px rgba(255, 193, 7, 0.5); /* Layered shadow and yellow outline */
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    margin-top: 2rem; /* More space above button */
+}
+.contact-submit-btn:hover {
+    background-color: #0d1259; /* Darker blue on hover */
+    transform: translateY(-5px) scale(1.02); /* More pronounced lift and scale */
+    box-shadow: 0 15px 40px rgba(26, 35, 126, 0.4), 0 0 0 3px rgba(255, 193, 7, 0.7); /* Enhanced shadows */
+}
+.message {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 1.1rem; /* Slightly larger message font */
+    font-weight: 700;
+    display: none; /* Hidden by default */
+}
+.message.success {
+    color: #28a745; /* Green for success */
+}
+.message.error {
+    color: #dc3545; /* Red for error */
+}
+
+/* ===================== */
+/* Dark Mode adjustments for contact page */
+/* ===================== */
+body.dark-mode {
+    background-color: #12121e; /* Even darker body background */
+    color: #e9ecef;
+}
+body.dark-mode .navbar {
+    background: linear-gradient(to right, #0a0e2f, #2d0b42); /* Darker navbar gradient */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+body.dark-mode .brand-logo {
+    text-shadow: 1px 1px 3px rgba(255, 193, 7, 0.3);
+}
+body.dark-mode .nav-link-item {
+    color: #adb5bd;
+}
+body.dark-mode .nav-link-item:hover, body.dark-mode .nav-link-item.active {
+    color: #ffc107;
+    text-shadow: 0 0 8px rgba(255, 193, 7, 0.6);
+}
+body.dark-mode .nav-auth-button {
+    background-color: #ffc107;
+    color: #1a237e;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+body.dark-mode .nav-auth-button:hover {
+    background-color: #e0ac02;
+    box-shadow: 0 6px 15px rgba(255, 193, 7, 0.6);
+}
+
+body.dark-mode .main-footer {
+    background-color: #12121e;
+    color: #8a8a9a;
+    box-shadow: inset 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+body.dark-mode .social-icon {
+    color: #8a8a9a;
+}
+body.dark-mode .social-icon:hover {
+    color: #ffc107;
+}
+
+body.dark-mode .contact-hero-overlay {
+    background-color: rgba(0, 0, 0, 0.8); /* Even darker overlay in dark mode */
+}
+body.dark-mode .contact-form-container {
+    background-color: #2b3035; /* Darker card for the form */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255,255,255,0.05);
+}
+body.dark-mode .contact-form-header h1 {
+    color: #ffc107; /* Yellow heading */
+}
+body.dark-mode .contact-form-header p {
+    color: #adb5bd;
+}
+body.dark-mode .contact-form-label {
+    color: #e9ecef;
+}
+body.dark-mode .contact-form-input,
+body.dark-mode .contact-form-textarea,
+body.dark-mode .contact-form-select {
+    background-color: #343a40; /* Darker input background */
+    border-color: #495057;
+    color: #e9ecef;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+body.dark-mode .contact-form-input:focus,
+body.dark-mode .contact-form-textarea:focus,
+body.dark-mode .contact-form-select:focus {
+    background-color: #3a404a; /* Slightly lighter dark on focus */
+    border-color: #007bff;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.4);
+}
+body.dark-mode .contact-submit-btn {
+    background-color: #ffc107; /* Yellow button in dark mode */
+    color: #1a237e; /* Deep blue text */
+    box-shadow: 0 10px 30px rgba(255, 193, 7, 0.3), 0 0 0 2px rgba(26, 35, 126, 0.5);
+}
+body.dark-mode .contact-submit-btn:hover {
+    background-color: #e0ac02;
+    box-shadow: 0 15px 40px rgba(255, 193, 7, 0.4), 0 0 0 3px rgba(26, 35, 126, 0.7);
+}
+
+/* ===================== */
+/* Animations */
+/* ===================== */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ===================== */
+/* 📱 Responsive Adjustments */
+/* ===================== */
+@media (min-width: 768px) { /* Medium screens and up */
+    .contact-hero-title {
+        font-size: 5.5rem;
+    }
+    .contact-hero-subtitle {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 767px) { /* Small screens (mobile) */
+  .navbar-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .nav-links {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+  .contact-hero {
+      height: 40vh; /* Shorter hero on mobile */
+  }
+  .contact-hero-title {
+    font-size: 3rem;
+  }
+  .contact-hero-subtitle {
+    font-size: 1.25rem;
+  }
+  .form-section {
+    padding: 3rem 1rem;
+  }
+  .contact-form-container {
+    padding: 2.5rem 1.5rem;
+    transform: translateY(-30px); /* Less overlap on mobile */
+  }
+  .contact-form-header h1 {
+    font-size: 2.5rem;
+  }
+  .contact-form-header p {
+    font-size: 1rem;
+  }
+  .contact-form-input,
+  .contact-form-textarea,
+  .contact-form-select,
+  .contact-submit-btn {
+      padding: 0.9rem 1.25rem;
+      font-size: 1rem;
+  }
+  .contact-form-textarea {
+      min-height: 120px;
+  }
+}

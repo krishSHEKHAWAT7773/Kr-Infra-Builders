@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | KR Infra Builders</title>
+    <link rel="stylesheet" href="contact.css">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS CDN for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation Bar (Copied from index.html) -->
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="navbar-container container">
+            <a href="index.html#home" class="brand-logo">KR Infra Builders</a>
+            <ul class="nav-links">
+                <li><a href="index.html#home" class="nav-link-item"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="index.html#about" class="nav-link-item"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="index.html#projects" class="nav-link-item"><i class="fas fa-building"></i> Projects</a></li>
+                <li><a href="#contact-form-section" class="nav-link-item active"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="login.html" class="nav-auth-button"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contact Hero Section -->
+    <header class="contact-hero">
+        <div class="contact-hero-overlay"></div>
+        <div class="contact-hero-content">
+            <h1 class="contact-hero-title">Get in Touch</h1>
+            <p class="contact-hero-subtitle">We'd love to hear from you and discuss your project needs.</p>
+        </div>
+    </header>
+
+    <!-- Contact Form Section -->
+    <section id="contact-form-section" class="form-section">
+        <div class="contact-form-container">
+            <div class="contact-form-header">
+                <h1>Send Us a Message</h1>
+                <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+            </div>
+
+            <form id="contactForm" action="https://api.web3forms.com/submit" method="POST" class="space-y-6">
+                <!-- Web3Forms Access Key (Important!) -->
+                <!-- REPLACE 'YOUR_ACCESS_KEY_HERE' with your actual Web3Forms access key. -->
+                <input type="hidden" name="access_key" value="bb1832cc-d208-4fdd-b998-8822b71926c0">
+                <input type="hidden" name="redirect" value="https://web3forms.com/success">
+                
+                <div class="contact-form-group">
+                    <label for="name" class="contact-form-label">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Your Name" required class="contact-form-input">
+                </div>
+
+                <div class="contact-form-group">
+                    <label for="phone" class="contact-form-label">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Phone Number" required class="contact-form-input">
+                </div>
+
+                <div class="contact-form-group">
+                    <label for="email" class="contact-form-label">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Email Address" required class="contact-form-input">
+                </div>
+
+                <div class="contact-form-group">
+                    <label for="category" class="contact-form-label">Service Category</label>
+                    <select id="category" name="category" required class="contact-form-select">
+                        <option value="">Select a service category</option>
+                        <option value="Civil & Construction">Civil & Construction</option>
+                        <option value="Maintenance">Maintenance works</option>
+                        <option value="Painting">Painting works</option>
+                        <option value="Plumbing">Plumbing works</option>
+                        <option value="Aluminum & Glass">Aluminum & Glass works</option>
+                        <option value="Electrical">Electrical works</option>
+                        <option value="Vastu Consultation">Vastu Consultation</option>
+                        <option value="2D & 3D Designs">2D & 3D Designs</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="contact-form-group">
+                    <label for="message" class="contact-form-label">Message</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Your Message" required class="contact-form-textarea"></textarea>
+                </div>
+                
+                <!-- Honeypot Spam Protection (keep this hidden) -->
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                <div class="contact-form-group">
+                    <button type="submit" class="contact-submit-btn">Send Message</button>
+                    <!-- Web3Forms handles its own feedback/redirect by default, this message div isn't needed for default behavior -->
+                    <!-- <p id="formMessage" class="message"></p> -->
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer (Copied from index.html) -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2024 KR Infra Builders Pvt. Ltd. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- No custom JS needed here for Web3Forms default submission -->
+    <!-- Web3Forms handles its own redirect/feedback based on its 'redirect' input -->
+</body>
+</html>
