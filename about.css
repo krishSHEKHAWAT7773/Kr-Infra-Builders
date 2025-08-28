@@ -1,0 +1,505 @@
+/* ===================== */
+/* 肌 Reset & Base Styles */
+/* ===================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* Disable user selection for a cleaner presentation */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+html {
+  scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+}
+body {
+  font-family: 'Inter', sans-serif; /* Consistent modern sans-serif font */
+  background-color: #f8f9fa; /* Soft off-white base background */
+  color: #343a40; /* Darker text for readability in light mode */
+  line-height: 1.6;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+nav a, nav span, nav div {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: auto; /* still clickable */
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+
+/* Reusable Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem; /* Consistent padding */
+}
+
+/* Accessibility Focus */
+:focus {
+  outline: 3px solid #ffc107 !important; /* Prominent yellow focus outline for accessibility and style */
+  outline-offset: 4px;
+  border-radius: 4px; /* Ensure rounded focus for inputs */
+}
+
+/* Lock Images */
+img {
+  pointer-events: none; /* Prevent image dragging/interaction */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  max-width: 100%; /* Ensure images are responsive */
+  height: auto;
+}
+
+/* ===================== */
+/* 塙 Navigation Bar */
+/* ===================== */
+.navbar {
+  background: linear-gradient(to right, #1a237e, #4a148c); /* Deep blue to rich purple gradient */
+  padding: 1rem 0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); /* More pronounced shadow */
+  position: fixed;
+  width: 100%;
+  z-index: 1000; /* Ensure navbar is always on top */
+}
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.5rem;
+  position: relative; /* Add this for the absolute menu positioning */
+}
+.brand-logo {
+  font-size: 1.9rem; /* Slightly larger brand name */
+  font-weight: 800; /* Bolder brand name */
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 0.08em; /* Increased letter spacing for classic feel */
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3); /* Subtle text shadow */
+}
+
+/* Hamburger button styles - hidden by default */
+.hamburger-menu {
+  display: none; /* Hide on desktop */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #fff;
+  transition: transform 0.3s ease;
+  z-index: 1001;
+}
+
+.hamburger-menu:focus {
+    outline: 3px solid #ffc107 !important;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2.5rem; /* More spacing between nav items */
+  font-size: 1.05rem; /* Slightly larger font size */
+}
+.nav-link-item {
+  color: #e0e0e0; /* Softer white for links */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.2s ease, text-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem; /* Slightly more space for icon */
+}
+.nav-link-item:hover, .nav-link-item.active {
+  color: #ffdb58; /* Brighter yellow on hover and active */
+  transform: translateY(-3px); /* More pronounced lift effect */
+  text-shadow: 0 0 8px rgba(255, 219, 88, 0.6); /* Glow effect */
+}
+.nav-auth-button {
+  background-color: #ffc107; /* Bright yellow button */
+  color: #1a237e !important; /* Deep blue text for contrast */
+  padding: 0.7rem 1.4rem; /* Generous padding */
+  border-radius: 9999px; /* Pill-shaped button */
+  font-weight: 700; /* Bolder text */
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4); /* Soft shadow */
+}
+.nav-auth-button:hover {
+  background-color: #ffdb58; /* Lighter yellow on hover */
+  transform: translateY(-2px) scale(1.03); /* Subtle lift and scale */
+  box-shadow: 0 6px 15px rgba(255, 193, 7, 0.6); /* Enhanced shadow */
+}
+
+/* ===================== */
+/* ｧｱ Footer */
+/* ===================== */
+.main-footer {
+  background-color: #1e1e2e; /* Deep dark background for footer */
+  color: #adb5bd; /* Soft gray text */
+  padding: 3rem 0; /* More vertical padding */
+  text-align: center;
+  box-shadow: inset 0 6px 20px rgba(0, 0, 0, 0.2); /* Inner shadow for depth */
+}
+.main-footer .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; /* More spacing */
+}
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem; /* Wider spacing for social icons */
+  margin-top: 1rem;
+}
+.social-icon {
+  color: #adb5bd;
+  font-size: 1.7rem; /* Larger social icons */
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+.social-icon:hover {
+  color: #ffc107; /* Yellow on hover */
+  transform: translateY(-5px) scale(1.1); /* Lift and slight scale */
+}
+
+footer, footer a, footer span, footer img, footer div {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: auto; /* still clickable */
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/* ===================== */
+/* Custom styles for About Page */
+/* ===================== */
+.about-hero {
+    position: relative;
+    height: 60vh; /* Taller hero section for more impact */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    padding: 0 1.5rem;
+    background-image: url('fire2.jpg'); /* Placeholder for your background image */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Parallax effect */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* Stronger shadow for the hero bottom */
+    /* REMOVED: margin-top: 5rem; */ /* This was causing the white space */
+}
+.about-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Slightly darker overlay */
+    backdrop-filter: blur(3px); /* Subtle blur for depth */
+}
+.about-hero-content {
+    position: relative;
+    z-index: 10;
+    animation: fadeInScale 1s ease-out; /* Custom animation for hero content */
+}
+.about-hero-title {
+    font-size: 4.5rem; /* Larger, more impactful title */
+    font-weight: 900; /* Extra bold */
+    margin-bottom: 1rem;
+    line-height: 1.1;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.5); /* Clearer text shadow */
+    letter-spacing: 0.05em; /* Classic touch */
+}
+.about-hero-subtitle {
+    font-size: 1.8rem; /* Larger subtitle */
+    font-weight: 300;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Section specific styles */
+.our-story-section, .mission-vision-section, .values-section, .leaders-section, .cta-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+.section-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+}
+
+.section-description {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+}
+
+/* Values Section Icons */
+.value-item i {
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); /* Subtle shadow for icons */
+}
+
+/* Leaders Section specific styles */
+.leader-card {
+    background-color: #f8f8fa; /* Light background for leader cards */
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+}
+.leader-card:hover {
+    box-shadow: 0 15px 40px rgba(179, 255, 0, 0.1);
+    transform: translateY(-8px) scale(1.02);
+}
+.leader-card img {
+    border-radius: 50%; /* Circular images */
+    border: 4px solid #ffc107; /* Yellow border for emphasis */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+.leader-card h3 {
+    color: #1a237e; /* Deep blue for names */
+    font-weight: 700;
+}
+.leader-card p.font-semibold {
+    color: #4a148c; /* Purple for roles */
+}
+.leader-card p.leading-relaxed {
+    color: #555; /* Slightly darker text for description */
+}
+
+
+/* ===================== */
+/* Dark Mode adjustments for about page */
+/* ===================== */
+body.dark-mode {
+    background-color: #12121e; /* Even darker body background */
+    color: #e9ecef;
+}
+body.dark-mode .navbar {
+    background: linear-gradient(to right, #0a0e2f, #2d0b42); /* Darker navbar gradient */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+body.dark-mode .brand-logo {
+    text-shadow: 1px 1px 3px rgba(255, 193, 7, 0.3);
+}
+body.dark-mode .nav-link-item {
+    color: #adb5bd;
+}
+body.dark-mode .nav-link-item:hover, body.dark-mode .nav-link-item.active {
+    color: #ffc107;
+    text-shadow: 0 0 8px rgba(255, 193, 7, 0.6);
+}
+body.dark-mode .nav-auth-button {
+    background-color: #ffc107;
+    color: #1a237e;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+body.dark-mode .nav-auth-button:hover {
+    background-color: #e0ac02;
+    box-shadow: 0 6px 15px rgba(255, 193, 7, 0.6);
+}
+
+body.dark-mode .main-footer {
+    background-color: #12121e;
+    color: #8a8a9a;
+    box-shadow: inset 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+body.dark-mode .social-icon {
+    color: #8a8a9a;
+}
+body.dark-mode .social-icon:hover {
+    color: #ffc107;
+}
+
+body.dark-mode .about-hero-overlay {
+    background-color: rgba(0, 0, 0, 0.8); /* Even darker overlay in dark mode */
+}
+
+body.dark-mode .our-story-section {
+    background-color: #1e1e2e;
+}
+body.dark-mode .our-story-section .section-title {
+    color: #ffc107; /* Yellow title in dark mode */
+}
+body.dark-mode .our-story-section .section-description {
+    color: #adb5bd;
+}
+body.dark-mode .mission-vision-section {
+    background-color: #12121e;
+}
+
+body.dark-mode .values-section {
+    background-color: #1e1e2e;
+}
+body.dark-mode .values-section .section-title {
+    color: #ffc107; /* Yellow title in dark mode */
+}
+body.dark-mode .value-item {
+    background-color: #2b3035;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+body.dark-mode .value-item h3 {
+    color: #e9ecef;
+}
+body.dark-mode .value-item p {
+    color: #adb5bd;
+}
+
+/* Dark mode for Leaders Section */
+body.dark-mode .leaders-section {
+    background-color: #12121e;
+}
+body.dark-mode .leaders-section .section-title {
+    color: #ffc107; /* Yellow title in dark mode */
+}
+body.dark-mode .leader-card {
+    background-color: #2b3035; /* Darker card background */
+    border-color: #3e444c;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+body.dark-mode .leader-card h3 {
+    color: #fff;
+}
+body.dark-mode .leader-card p.font-semibold {
+    color: #ffdb58; /* Lighter yellow for roles in dark mode */
+}
+body.dark-mode .leader-card p.leading-relaxed {
+    color: #adb5bd;
+}
+
+
+/* ===================== */
+/* Animations */
+/* ===================== */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ===================== */
+/* 導 Responsive Adjustments */
+/* ===================== */
+@media (min-width: 768px) { /* Medium screens and up */
+    .about-hero-title {
+        font-size: 5.5rem;
+    }
+    .about-hero-subtitle {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 767px) { /* Small screens (mobile) */
+  /* Re-adjust navbar container for mobile */
+  .navbar-container {
+    flex-direction: row; /* Keep elements in a row */
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.5rem;
+  }
+  
+  /* Show the hamburger menu button */
+  .hamburger-menu {
+      display: block;
+  }
+
+  /* Make the navigation links collapsible */
+  .nav-links {
+    position: absolute;
+    top: 100%; /* Position below the navbar */
+    left: 0;
+    width: 100%;
+    max-height: 0; /* Initially hidden */
+    overflow: hidden;
+    background: linear-gradient(to right, #1a237e, #4a148c);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+  }
+  
+  /* Class to show the menu */
+  .nav-links.open {
+    max-height: 500px; /* A large enough value to reveal all links */
+    padding: 1rem 0; /* Add vertical padding when open */
+    gap: 1.5rem;
+  }
+
+  .about-hero {
+      height: 40vh; /* Shorter hero on mobile */
+      /* REMOVED: margin-top: 4rem; */ /* This was causing the white space */
+  }
+  .about-hero-title {
+    font-size: 3rem;
+  }
+  .about-hero-subtitle {
+    font-size: 1.25rem;
+  }
+
+  /* Adjustments for sections on mobile */
+  .our-story-section, .mission-vision-section, .values-section, .leaders-section, .cta-section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  .our-story-section .container, .mission-vision-section .container, .values-section .container, .leaders-section .container, .cta-section .container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .section-title {
+    font-size: 2.5rem;
+  }
+  .section-description, .card-description {
+    font-size: 1rem;
+  }
+  .card-title {
+    font-size: 2rem;
+  }
+  .value-item h3 {
+    font-size: 1.5rem;
+  }
+  .value-item p {
+    font-size: 0.95rem;
+  }
+  .cta-section h2 {
+    font-size: 2.5rem;
+  }
+  .cta-section p {
+    font-size: 1.1rem;
+  }
+  .cta-section a {
+    padding: 0.8rem 2.5rem;
+    font-size: 1rem;
+  }
+  /* Leaders specific mobile adjustments */
+  .leaders-section .grid {
+    grid-template-columns: 1fr; /* Stack cards on mobile */
+    gap: 2.5rem;
+  }
+  .leader-card {
+    padding: 2.5rem 1.5rem;
+  }
+  .leader-card h3 {
+    font-size: 2rem;
+  }
+  .leader-card p.font-semibold {
+    font-size: 1.1rem;
+  }
+  .leader-card p.leading-relaxed {
+    font-size: 0.95rem;
+  }
+}

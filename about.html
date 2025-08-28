@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | KR Infra Builders</title>
+    <link rel="stylesheet" href="about.css">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS CDN for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation Bar (Copied from contact.html) -->
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="navbar-container container">
+            <a href="index.html#home" class="brand-logo">KR Infra Builders</a>
+            
+            <!-- Hamburger Button for Mobile -->
+            <button class="hamburger-menu" aria-label="Toggle navigation menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="nav-links-menu">
+                <li><a href="index.html" class="nav-link-item"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="index.html#projects" class="nav-link-item"><i class="fas fa-building"></i> Projects</a></li>
+                <li><a href="contact.html" class="nav-link-item"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li><a href="login.html" class="nav-auth-button"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- About Hero Section -->
+    <header id="about-hero" class="about-hero">
+        <div class="about-hero-overlay"></div>
+        <div class="about-hero-content">
+            <h1 class="about-hero-title">Building a Brighter Future</h1>
+            <p class="about-hero-subtitle">Innovative solutions, reliable execution, and a commitment to excellence.</p>
+        </div>
+    </header>
+
+    <!-- Our Story Section -->
+    <section class="our-story-section bg-gray-50 dark:bg-gray-900 py-20 px-4">
+        <div class="container mx-auto flex flex-col lg:flex-row items-center gap-12">
+            <div class="lg:w-1/2">
+                <h2 class="section-title text-4xl lg:text-5xl font-extrabold text-indigo-900 dark:text-yellow-400 mb-6">Our Story</h2>
+                <p class="section-description text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                    Founded with a vision to transform the landscape of construction and infrastructure, KR Infra Builders Pvt. Ltd. has grown into a beacon of quality and innovation. From humble beginnings, our journey has been marked by a relentless pursuit of engineering excellence and unwavering dedication to client satisfaction.
+                </p>
+                <p class="section-description text-lg lg:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
+                    We've built a reputation not just on structures, but on strong relationships and a deep understanding of our clients' unique needs, delivering projects that stand the test of time and enrich communities.
+                </p>
+            </div>
+            <div class="lg:w-1/2">
+                <img src="work2.jpg" alt="Our Company Journey" class="rounded-xl shadow-2xl w-full h-auto object-cover transform hover:scale-105 transition-transform duration-500 ease-in-out">
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision Section -->
+    <section class="mission-vision-section bg-white dark:bg-gray-800 py-20 px-4">
+        <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div class="mission-card bg-gradient-to-br from-blue-700 to-purple-800 text-white p-8 rounded-xl shadow-2xl transform hover:scale-105 transition-transform duration-500 ease-in-out">
+                <h3 class="card-title text-3xl font-bold mb-4 flex items-center gap-3"><i class="fas fa-bullseye text-yellow-300"></i> Our Mission</h3>
+                <p class="card-description text-lg leading-relaxed">
+                    To deliver exceptional infrastructure and construction solutions that exceed client expectations, foster sustainable development, and contribute positively to society through innovation, integrity, and safety.
+                </p>
+            </div>
+            <div class="vision-card bg-gradient-to-br from-green-600 to-blue-700 text-white p-8 rounded-xl shadow-2xl transform hover:scale-105 transition-transform duration-500 ease-in-out">
+                <h3 class="card-title text-3xl font-bold mb-4 flex items-center gap-3"><i class="fas fa-eye text-yellow-300"></i> Our Vision</h3>
+                <p class="card-description text-lg leading-relaxed">
+                    To be the leading and most trusted infrastructure development company, recognized for our pioneering spirit, unmatched quality, and unwavering commitment to client success and environmental stewardship.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values Section -->
+    <section class="values-section bg-gray-50 dark:bg-gray-900 py-20 px-4">
+        <div class="container mx-auto text-center">
+            <h2 class="section-title text-4xl lg:text-5xl font-extrabold text-indigo-900 dark:text-yellow-400 mb-12">Our Core Values</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="value-item p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <i class="fas fa-handshake text-5xl text-blue-600 dark:text-yellow-500 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">Integrity</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Upholding the highest ethical standards in all our dealings, ensuring transparency and trust.</p>
+                </div>
+                <div class="value-item p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <i class="fas fa-lightbulb text-5xl text-purple-600 dark:text-green-500 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">Innovation</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Embracing new technologies and creative solutions to drive efficiency and superior results.</p>
+                </div>
+                <div class="value-item p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <i class="fas fa-award text-5xl text-yellow-600 dark:text-blue-500 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">Quality Excellence</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Committing to unparalleled quality in every project, ensuring durability and client satisfaction.</p>
+                </div>
+                 <div class="value-item p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <i class="fas fa-users text-5xl text-pink-600 dark:text-orange-500 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">Collaboration</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Working hand-in-hand with clients, partners, and communities to achieve shared goals.</p>
+                </div>
+                <div class="value-item p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <i class="fas fa-shield-alt text-5xl text-red-600 dark:text-red-400 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">Safety First</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Prioritizing the well-being of our team, partners, and the public in every operation.</p>
+                </div>
+                <div class="value-item p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <i class="fas fa-seedling text-5xl text-green-600 dark:text-cyan-500 mb-6"></i>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">Sustainability</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Building for tomorrow by integrating environmentally responsible practices today.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Leaders Section -->
+    <section class="leaders-section bg-white dark:bg-gray-800 py-20 px-4">
+        <div class="container mx-auto text-center">
+            <h2 class="section-title text-4xl lg:text-5xl font-extrabold text-indigo-900 dark:text-yellow-400 mb-12">Meet Our Leaders</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                <!-- Leader 1: Krishan Singh Shekhawat -->
+                <div class="leader-card p-8 bg-gray-50 rounded-xl shadow-lg border border-gray-200 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <img src="https://placehold.co/150x150/4a148c/ffffff?text=KSS" alt="Krishan Singh Shekhawat" class="w-36 h-36 rounded-full mx-auto mb-6 object-cover border-4 border-yellow-500 shadow-md">
+                    <h3 class="text-3xl font-bold text-indigo-900 mb-2">Mr. Krishan Singh Shekhawat</h3>
+                    <p class="text-xl font-semibold text-purple-700 mb-4">Chairman</p>
+                    <p class="text-gray-700 leading-relaxed">
+                        As Chairman, Krishan oversees the strategic direction of our operations and financial stewardship, ensuring our resources are optimally utilized to achieve our ambitious goals.
+                    </p>
+                </div>
+                <!-- Leader 2: Abhay Pratap Singh Shekhawat -->
+                <div class="leader-card p-8 bg-gray-50 rounded-xl shadow-lg border border-gray-200 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <img src="https://placehold.co/150x150/1a237e/ffffff?text=APSS" alt="Abhay Pratap Singh Shekhawat" class="w-36 h-36 rounded-full mx-auto mb-6 object-cover border-4 border-yellow-500 shadow-md">
+                    <h3 class="text-3xl font-bold text-indigo-900 mb-2">Mr. Abhay Pratap Singh Shekhawat</h3>
+                    <p class="text-xl font-semibold text-purple-700 mb-4">CEO</p>
+                    <p class="text-gray-700 leading-relaxed">
+                        Abhay, our CEO, is at the forefront of crafting innovative plans, defining strategic pathways, and integrating cutting-edge technology to keep KR Infra Builders at the industry's vanguard.
+                    </p>
+                </div>
+                <!-- Leader 3: Hanuman Singh Shekhawat -->
+                <div class="leader-card p-8 bg-gray-50 rounded-xl shadow-lg border border-gray-200 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <img src="https://placehold.co/150x150/0d1259/ffffff?text=HSS" alt="Hanuman Singh Shekhawat" class="w-36 h-36 rounded-full mx-auto mb-6 object-cover border-4 border-yellow-500 shadow-md">
+                    <h3 class="text-3xl font-bold text-indigo-900 mb-2">Mr. Hanuman Singh Shekhawat</h3>
+                    <p class="text-xl font-semibold text-purple-700 mb-4">COO</p>
+                    <p class="text-gray-700 leading-relaxed">
+                        With over two decades of invaluable experience in the construction industry, Hanuman sir, our COO, brings unparalleled expertise and wisdom to every project, ensuring seamless execution.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section bg-gradient-to-r from-indigo-700 to-purple-800 py-20 px-4 text-white text-center">
+        <div class="container mx-auto">
+            <h2 class="text-4xl lg:text-5xl font-extrabold mb-6">Ready to Build Something Great?</h2>
+            <p class="text-xl lg:text-2xl mb-10 max-w-3xl mx-auto">
+                Join forces with KR Infra Builders and let's bring your ambitious projects to life.
+            </p>
+            <a href="contact.html" class="inline-block bg-yellow-400 text-indigo-900 font-bold text-xl py-4 px-10 rounded-full shadow-lg transform hover:scale-105 hover:bg-yellow-300 transition-all duration-300 ease-in-out">
+                Contact Us Today <i class="fas fa-arrow-right ml-3"></i>
+            </a>
+        </div>
+    </section>
+
+    <script>
+        // Existing scripts for preventing context menu and dev tools
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', function (e) {
+            if ((e.ctrlKey || e.metaKey) && ['c', 'x', 's'].includes(e.key.toLowerCase())) {
+                e.preventDefault();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i', 'j'].includes(e.key.toLowerCase())) {
+                e.preventDefault();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'u') {
+                e.preventDefault();
+            }
+            if (e.key === 'F12') {
+                e.preventDefault();
+            }
+        });
+
+        // JavaScript for the collapsible mobile menu (copied from contact.html)
+        const hamburgerBtn = document.querySelector('.hamburger-menu');
+        const navLinks = document.getElementById('nav-links-menu');
+        const navLinksItems = document.querySelectorAll('.nav-link-item, .nav-auth-button');
+
+        hamburgerBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+            hamburgerBtn.querySelector('i').classList.toggle('fa-bars');
+            hamburgerBtn.querySelector('i').classList.toggle('fa-times');
+        });
+
+        navLinksItems.forEach(link => {
+            link.addEventListener('click', () => {
+                // Check if the menu is open and the clicked link is not the current page's hero
+                if (navLinks.classList.contains('open')) {
+                    // This logic ensures if you click a link that points to a section on the *same* page,
+                    // the menu still collapses. If it navigates to a different page, the page reload
+                    // will handle the menu state.
+                    const href = link.getAttribute('href');
+                    if (href && href.startsWith('#')) { // Check if it's an anchor link on the same page
+                        navLinks.classList.remove('open');
+                        hamburgerBtn.querySelector('i').classList.remove('fa-times');
+                        hamburgerBtn.querySelector('i').classList.add('fa-bars');
+                    }
+                }
+            });
+        });
+    </script>
+
+    <!-- Footer (Copied from index.html) -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 KR Infra Builders Pvt. Ltd. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
