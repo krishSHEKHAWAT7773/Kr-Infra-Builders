@@ -22,6 +22,17 @@ body {
   overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
+nav a, nav span, nav div {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: auto; /* still clickable */
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+
 /* Reusable Container */
 .container {
   max-width: 1200px;
@@ -145,6 +156,15 @@ img {
   transform: translateY(-5px) scale(1.1); /* Lift and slight scale */
 }
 
+footer, footer a, footer span, footer img, footer div {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: auto; /* still clickable */
+  -webkit-user-drag: none;
+  user-drag: none;
+}
 
 /* ===================== */
 /* Custom styles for Contact Page */

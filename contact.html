@@ -98,6 +98,35 @@
         </div>
     </section>
 
+    <script>
+  document.addEventListener('contextmenu', event => event.preventDefault());
+</script>
+<script>
+  document.addEventListener('keydown', function (e) {
+    // Block Ctrl+C, Ctrl+X, Ctrl+S
+    if ((e.ctrlKey || e.metaKey) && ['c', 'x', 's'].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+    }
+
+    // Block Ctrl+Shift+I/J/U
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i', 'j'].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'u') {
+      e.preventDefault();
+    }
+
+    // Block F12
+    if (e.key === 'F12') {
+      e.preventDefault();
+    }
+  });
+
+  // Optional: Block right-click
+  document.addEventListener('contextmenu', event => event.preventDefault());
+</script>
+
     <!-- Footer (Copied from index.html) -->
     <footer class="main-footer">
         <div class="container">
