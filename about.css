@@ -195,7 +195,7 @@ footer, footer a, footer span, footer img, footer div {
     justify-content: center;
     align-items: center;
     text-align: center;
-    color: #fff;
+    color: #fffb00;
     padding: 0 1.5rem;
     background-image: url('fire2.jpg'); /* Placeholder for your background image */
     background-size: cover;
@@ -219,10 +219,11 @@ footer, footer a, footer span, footer img, footer div {
     animation: fadeInScale 1s ease-out; /* Custom animation for hero content */
 }
 .about-hero-title {
-    font-size: 4.5rem; /* Larger, more impactful title */
+    font-size: 4rem; /* Larger, more impactful title */
     font-weight: 900; /* Extra bold */
     margin-bottom: 1rem;
-    line-height: 1.1;
+    margin-top: 5rem;
+    line-height: 1;
     text-shadow: 2px 2px 8px rgba(0,0,0,0.5); /* Clearer text shadow */
     letter-spacing: 0.05em; /* Classic touch */
 }
@@ -232,6 +233,7 @@ footer, footer a, footer span, footer img, footer div {
     text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
     max-width: 800px;
     margin: 0 auto;
+    color: #ffffff;
 }
 
 /* Section specific styles */
