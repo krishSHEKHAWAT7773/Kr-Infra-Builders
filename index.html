@@ -13,43 +13,34 @@
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="icon" type="image/png" href="icon.png">
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    .hero-bg {
-      background-image: url('background.jpg'); /* Placeholder image */
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed; /* Parallax effect */
-    }
-    .hover-grow:hover {
-      transform: scale(1.03);
-    }
-  </style>
-  <script>
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('dragstart', e => e.preventDefault());
-  </script>
+  <!-- Custom CSS for common styles and index-specific styles -->
+  <link rel="stylesheet" href="main.css">
 </head>
 <body class="bg-gray-100 text-gray-900 leading-relaxed antialiased">
 
-  <!-- Navbar -->
-  <nav class="bg-gradient-to-r from-blue-900 to-purple-800 p-4 shadow-lg fixed w-full z-50">
-    <div class="container mx-auto flex justify-between items-center">
-      <a href="#home" class="text-2xl font-bold text-white tracking-wide">KR Infra Builders</a>
-      <ul class="flex space-x-6 text-lg">
-        <li><a href="about.html" class="text-white hover:text-yellow-400 transition duration-300 flex items-center gap-1"><i class="fas fa-info-circle"></i> About</a></li>
-        <li><a href="#services" class="text-white hover:text-yellow-400 transition duration-300 flex items-center gap-1"><i class="fas fa-hammer"></i> Services</a></li>
-        <li><a href="#projects" class="text-white hover:text-yellow-400 transition duration-300 flex items-center gap-1"><i class="fas fa-building"></i> Projects</a></li>
-        <li><a href="contact.html" class="text-white hover:text-yellow-400 transition duration-300 flex items-center gap-1"><i class="fas fa-envelope"></i> Contact</a></li>
-        <li><a href="login.html" class="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold hover:bg-yellow-300 transition duration-300 flex items-center gap-1"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+  <!-- Navigation Bar (Consistent with About/Contact Pages) -->
+  <nav class="navbar" aria-label="Main navigation">
+    <div class="navbar-container container">
+      <a href="#home" class="brand-logo">KR Infra Builders</a>
+      
+      <!-- Hamburger Button for Mobile -->
+      <button class="hamburger-menu" aria-label="Toggle navigation menu">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <ul class="nav-links" id="nav-links-menu">
+        <li><a href="#home" class="nav-link-item active"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="about.html#about-hero" class="nav-link-item"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="#services" class="nav-link-item"><i class="fas fa-hammer"></i> Services</a></li>
+        <li><a href="#projects" class="nav-link-item"><i class="fas fa-building"></i> Projects</a></li>
+        <li><a href="contact.html#contact-form-section" class="nav-link-item"><i class="fas fa-envelope"></i> Contact</a></li>
+        <li><a href="login.html" class="nav-auth-button"><i class="fas fa-sign-in-alt"></i> Login</a></li>
       </ul>
     </div>
   </nav>
 
   <!-- Hero Section -->
-  <header id="home" class="hero-bg h-screen flex flex-col justify-center items-center text-white text-center px-4 relative">
+  <header id="home" class="hero-bg h-screen flex flex-col justify-center items-center text-white text-center px-4 relative"> <!-- Removed mt-[5rem] class -->
     <div class="absolute inset-0 bg-black opacity-60"></div>
     <div class="z-10 animate-fade-in-down">
       <img src="logo.png" alt="KR Infra Builders Logo" class="w-32 md:w-48 mx-auto mb-6 drop-shadow-lg">
@@ -160,45 +151,42 @@
   <!-- Projects Section (Placeholder for dynamic content) -->
   <section id="projects" class="py-20 bg-white shadow-inner">
     <div class="container mx-auto px-6 text-center">
-      <h2 class="text-5xl font-bold text-blue-800 mb-12 border-b-4 border-yellow-400 inline-block pb-2 animate-fade-in">Our Latest Projects</h2>
+      <h2 class="text-5xl font-bold text-blue-800 mb-12 border-b-4 border-yellow-400 inline-block pb-2 animate-fade-in">Our Previous experience</h2>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         <!-- Project Card 1 -->
         <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 hover-grow">
-          <img src="https://placehold.co/400x250/800080/FFFFFF?text=Project+Alpha" alt="Project Alpha" class="w-full h-48 object-cover">
+          <img src="godrej1.jpg" alt="Project GCPL" class="w-full h-48 object-cover">
           <div class="p-6 text-left">
-            <h3 class="text-2xl font-semibold text-blue-800 mb-2">Residential Complex A</h3>
-            <p class="text-gray-700 text-base mb-4">A modern residential complex designed for sustainable urban living in Jammu.</p>
-            <a href="#" class="text-yellow-500 hover:text-yellow-600 font-medium flex items-center gap-1">View Details <i class="fas fa-arrow-right text-sm"></i></a>
+            <h3 class="text-2xl font-semibold text-blue-800 mb-2">PROJECT GODREJ </h3>
+            <p class="text-gray-700 text-base mb-4"> OUTSTANDING EXCELLENT experience in godrej consumer product limited in Himachal Pradesh ,Baddi for 20 years.</p>
           </div>
         </div>
         <!-- Project Card 2 -->
         <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 hover-grow">
-          <img src="https://placehold.co/400x250/6A0DAD/FFFFFF?text=Project+Beta" alt="Project Beta" class="w-full h-48 object-cover">
+          <img src="CROMPTON1.jpg" alt="Project CROMPTON" class="w-full h-48 object-cover">
           <div class="p-6 text-left">
-            <h3 class="text-2xl font-semibold text-blue-800 mb-2">Highway Expansion Project</h3>
-            <p class="text-gray-700 text-base mb-4">Expanding key highway infrastructure to improve connectivity across Kashmir.</p>
-            <a href="#" class="text-yellow-500 hover:text-yellow-600 font-medium flex items-center gap-1">View Details <i class="fas fa-arrow-right text-sm"></i></a>
+            <h3 class="text-2xl font-semibold text-blue-800 mb-2">PROJECT CROMPTON</h3>
+            <p class="text-gray-700 text-base mb-4">OVER 10 YEARS Services in maintanance and construction works with our best efforts and quality of work  at Himachal Pradesh , Baddi .</p>
           </div>
         </div>
         <!-- Project Card 3 -->
         <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 hover-grow">
-          <img src="https://placehold.co/400x250/4B0082/FFFFFF?text=Project+Gamma" alt="Project Gamma" class="w-full h-48 object-cover">
+          <img src="agd1.jpg" alt="Project AGD" class="w-full h-48 object-cover">
           <div class="p-6 text-left">
-            <h3 class="text-2xl font-semibold text-blue-800 mb-2">Mountain Resort Development</h3>
-            <p class="text-gray-700 text-base mb-4">Developing an eco-friendly resort using specialized terrain techniques.</p>
-            <a href="#" class="text-yellow-500 hover:text-yellow-600 font-medium flex items-center gap-1">View Details <i class="fas fa-arrow-right text-sm"></i></a>
+            <h3 class="text-2xl font-semibold text-blue-800 mb-2">PROJECT AGD BIOMEDICALS</h3>
+            <p class="text-gray-700 text-base mb-4">WE ALSO SERVE OUR Quality Services IN AGD Biomedicals PAST YEARS, Kishanpura , HIMACHAL PRADESH ,BADDI . FOR Civil Construction Work and for Expension Projects </p>
           </div>
         </div>
       </div>
-      <a href="#" class="mt-12 inline-block bg-blue-800 text-white px-8 py-4 rounded-full text-xl font-bold uppercase shadow-xl hover:bg-blue-700 transform hover:scale-105 transition duration-300">View All Projects</a>
+      <a href="index.html#contact" class="mt-12 inline-block bg-blue-800 text-white px-8 py-4 rounded-full text-xl font-bold uppercase shadow-xl hover:bg-blue-700 transform hover:scale-105 transition duration-300">Registration</a>
     </div>
   </section>
 
   <!-- Contact Section -->
   <section id="contact" class="py-20 bg-gray-800 text-white">
     <div class="container mx-auto px-6 text-center max-w-2xl">
-      <h2 class="text-5xl font-bold text-yellow-400 mb-12 border-b-4 border-white inline-block pb-2 animate-fade-in">Get In Touch</h2>
-      <p class="text-lg mb-8">Have a question or a project in mind? We'd love to hear from you!</p>
+      <h2 class="text-5xl font-bold text-yellow-400 mb-12 border-b-4 border-white inline-block pb-2 animate-fade-in">Enroll Now</h2>
+      <p class="text-lg mb-8">Submit your details—if they meet our criteria, we’ll issue your access credentials and get you onboard.</p>
       <form action="https://formspree.io/f/mvgqlnkz" method="POST" class="space-y-6 text-left">
         <div>
           <label for="name" class="block text-xl font-semibold mb-2">Name</label>
@@ -216,20 +204,20 @@
           <label for="message" class="block text-xl font-semibold mb-2">Message</label>
           <textarea name="message" id="message" rows="6" required class="w-full p-4 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300"></textarea>
         </div>
-        <button type="submit" class="w-full bg-yellow-400 text-blue-900 px-8 py-4 rounded-full text-xl font-bold uppercase shadow-lg hover:bg-yellow-300 transform hover:scale-105 transition duration-300">Send Message</button>
+        <button type="submit" class="w-full bg-yellow-400 text-blue-900 px-8 py-4 rounded-full text-xl font-bold uppercase shadow-lg hover:bg-yellow-300 transform hover:scale-105 transition duration-300">Send Request</button>
       </form>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-400 py-8 text-center">
-    <div class="container mx-auto px-6">
+  <footer class="main-footer">
+    <div class="container">
       <p>&copy; <span id="current-year"></span> KR Infra Builders Pvt. Ltd. All rights reserved.</p>
-      <div class="flex justify-center space-x-6 mt-4">
-        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-facebook-f text-xl"></i></a>
-        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-twitter text-xl"></i></a>
-        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-linkedin-in text-xl"></i></a>
-        <a href="#" class="text-gray-400 hover:text-white transition duration-300"><i class="fab fa-instagram text-xl"></i></a>
+      <div class="social-links">
+        <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
       </div>
     </div>
   </footer>
@@ -238,16 +226,87 @@
     // Get current year for footer
     document.getElementById('current-year').textContent = new Date().getFullYear();
 
-    // Smooth scrolling for navigation links
+    // JavaScript for the collapsible mobile menu (consistent across pages)
+    const hamburgerBtn = document.querySelector('.hamburger-menu');
+    const navLinks = document.getElementById('nav-links-menu');
+    const navLinksItems = document.querySelectorAll('.nav-link-item, .nav-auth-button');
+
+    if (hamburgerBtn && navLinks) { // Ensure elements exist before adding listeners
+        hamburgerBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+            hamburgerBtn.querySelector('i').classList.toggle('fa-bars');
+            hamburgerBtn.querySelector('i').classList.toggle('fa-times');
+        });
+    }
+
+    navLinksItems.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navLinks && navLinks.classList.contains('open')) {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    navLinks.classList.remove('open');
+                    hamburgerBtn.querySelector('i').classList.remove('fa-times');
+                    hamburgerBtn.querySelector('i').classList.add('fa-bars');
+                }
+            }
+        });
+    });
+
+    // Smooth scrolling for navigation links (adjusted for consistency)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
 
-            document.querySelector(this.getAttribute('href')).scrollIntoIntoView({
-                behavior: 'smooth'
-            });
+            // Calculate offset for fixed navbar
+            const navbar = document.querySelector('.navbar');
+            const navbarHeight = navbar ? navbar.offsetHeight : 0;
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementPosition - navbarHeight - 20; // Added extra padding
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Close mobile menu if open (for internal links)
+                if (navLinks && navLinks.classList.contains('open')) {
+                    navLinks.classList.remove('open');
+                    hamburgerBtn.querySelector('i').classList.remove('fa-times');
+                    hamburgerBtn.querySelector('i').classList.add('fa-bars');
+                }
+            }
         });
     });
   </script>
+  <script>
+  document.addEventListener('keydown', function (e) {
+    // Block Ctrl+C, Ctrl+X, Ctrl+S
+    if ((e.ctrlKey || e.metaKey) && ['c', 'x', 's'].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+    }
+
+    // Block Ctrl+Shift+I/J/U
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i', 'j'].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'u') {
+      e.preventDefault();
+    }
+
+    // Block F12
+    if (e.key === 'F12') {
+      e.preventDefault();
+    }
+  });
+
+  // Optional: Block right-click
+  document.addEventListener('contextmenu', event => event.preventDefault());
+</script>
+
 </body>
 </html>
